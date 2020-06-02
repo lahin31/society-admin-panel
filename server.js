@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const adminRoutes = require('./routings/admin');
+
 require("dotenv").config();
 
 const app = express();
@@ -14,6 +16,8 @@ app.use(
   })
 );
 app.use(cors());
+
+app.use("/admin", adminRoutes);
 
 // database connection
 mongoose.set("useCreateIndex", true);

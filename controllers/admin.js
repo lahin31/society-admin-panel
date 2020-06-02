@@ -5,23 +5,23 @@ const Admin = require("../models/admin");
 
 exports.postLogin = async (req, res) => {
 	try {
-		const email = req.body.email;
-    const password = req.body.password;
+		const email = req.body.emailVal;
+    const password = req.body.passwordVal;
     const admin = await Admin.findOne({
-      email,
+      email
     });
+
+    console.log(admin)
 
     if (!admin) {
       return res.status(401).json({
-        error: "Email or Password isn't matched",
+        error: "Email or Password isn't matched lahin",
       });
 		}
 
-    const isEqual = await bcrypt.compare(password, admin.password);
-
-    if (!isEqual) {
+    if (admin.password !== password) {
       return res.status(500).json({
-        error: "Email or Password isn't matched",
+        error: "Email or Password isn't matched lahin",
       });
 		}
 		

@@ -10,6 +10,17 @@ const Login = (props) => {
     e.preventDefault();
     let emailVal = email.current.refs.input.value;
     let passwordVal = password.current.refs.input.value;
+    fetch("/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        emailVal,
+        passwordVal,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (
