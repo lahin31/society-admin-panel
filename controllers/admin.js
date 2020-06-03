@@ -1,7 +1,38 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+let refreshTokens = [];
+
 const Admin = require("../models/admin");
+
+// exports.postSignUp = async (req, res) => {
+//   try {
+//     const existingUser = await Admin.findOne({
+//       email: req.body.email,
+//     });
+
+//     if (existingUser) {
+//       return res.status(409).json({
+//         message: "Sorry email doesn't exist",
+//       });
+//     }
+//     const hashedPassword = await bcrypt.hash(req.body.password, 12);
+//     const admin = new Admin({
+//       name: req.body.name,
+//       email: req.body.email,
+//       password: hashedPassword,
+//     });
+//     const result = await admin.save();
+//     res.status(200).json({
+//       message: "Amin Created",
+//       result,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       error: err,
+//     });
+//   }
+// }
 
 exports.postLogin = async (req, res) => {
 	try {
@@ -10,8 +41,6 @@ exports.postLogin = async (req, res) => {
     const admin = await Admin.findOne({
       email
     });
-
-    console.log(admin)
 
     if (!admin) {
       return res.status(401).json({
@@ -25,19 +54,21 @@ exports.postLogin = async (req, res) => {
       });
 		}
 		
-		const token = generateAccessToken(student);
+    const token = generateAccessToken(admin);
+    console.log(token);
     const refreshToken = jwt.sign(
       {
-        userId: admin._id,
+        adminId: admin._id,
         email: admin.email,
       },
       process.env.REFRESH_TOKEN_SECRET
     );
+    console.log(refreshToken)
     // saving refresh tokens in an array
     refreshTokens.push(refreshToken);
     return res.status(200).json({
       message: "Authenticate successfull",
-      userId: admin._id,
+      adminId: admin._id,
       accessToken: token,
       expiresIn: "10h",
       refreshToken,
@@ -50,11 +81,11 @@ exports.postLogin = async (req, res) => {
 }
 
 // generating access token
-function generateAccessToken(user) {
+function generateAccessToken(admin) {
   return jwt.sign(
     {
-      userId: user.id,
-      email: user.email,
+      adminId: admin.id,
+      email: admin.email,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

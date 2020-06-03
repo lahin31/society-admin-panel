@@ -19,7 +19,7 @@ const Login = (props) => {
       }),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res))
+      .then((res) => {})
       .catch((err) => console.log(err));
   };
 
@@ -27,12 +27,17 @@ const Login = (props) => {
     <div className="login_wrapper" id="login_wrapper">
       <form className="login_form" onSubmit={handleLogin}>
         <div className="form_group">
-          <label>Email</label>
-          <Input type="text" placeholder="Email" ref={email} />
+          <label htmlFor="email">Email</label>
+          <Input type="text" placeholder="Email" id="email" ref={email} />
         </div>
         <div className="form_group">
-          <label>Password</label>
-          <Input type="password" placeholder="Password" ref={password} />
+          <label htmlFor="password">Password</label>
+          <Input
+            type="password"
+            placeholder="Password"
+            id="password"
+            ref={password}
+          />
         </div>
         <button type="submit" className="login_action_btn">
           Login
