@@ -1,21 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Redirect,
 } from 'react-router-dom';
+import AuthContext from './contexts/auth-context';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Navigation from './components/navigations/Navigation';
 
 function App() {
+  const [token, setToken] = useState("");
+  const [adminId, setAdminId] = useState("");
+  const [tokenExpiration, setTokenExpiration] = useState('');
+
+  useEffect(() => {
+    const adminInfoToken = JSON.parse(
+      localStorage.getItem('adminInfo')
+    );
+    const adminIdLocal = JSON.parse(localStorage.getItem('adminId'));
+    const tokenExp = JSON.parse(
+      localStorage.getItem('tokenExpiration')
+    );
+    if (adminInfoToken && adminIdLocal && tokenExp) {
+      setToken(adminInfoToken);
+      setAdminId(adminIdLocal);
+      setTokenExpiration(tokenExp);
+    }
+  })
+
+  const login = (token, adminId, tokenExpiratopn) => {
+    setToken(token);
+    setAdminId(adminId);
+    setTokenExpiration(tokenExpiratopn);
+  };
+
+  const logout = () => {
+    setToken(null);
+    setAdminId(null);
+    setTokenExpiration(null);
+    localStorage.removeItem('adminInfo');
+    localStorage.removeItem('adminId');
+    localStorage.removeItem('tokenExpiration');
+  };
+
   return (
     <Router>
-      <main className="main-content">
-        <Switch>
-          <Route path="/login" component={Login} />
-        </Switch>
-      </main>
+      <AuthContext.Provider
+        value={{
+          token,
+          adminId,
+          login,
+          logout,
+          tokenExpiration
+        }}>
+        <main className="main-content">
+          <Navigation />
+          <Switch>
+            {token && <Route path="/" exact component={Dashboard} />}
+            <Route path="/login" component={Login} />
+          </Switch>
+        </main>
+      </AuthContext.Provider>
     </Router>
   )
 }

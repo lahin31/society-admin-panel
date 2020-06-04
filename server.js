@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const db = require('./databases');
 
 const adminRoutes = require('./routings/admin');
+const studentRoutes = require('./routings/student');
 
 require("dotenv").config();
 
@@ -18,17 +19,10 @@ app.use(
 app.use(cors());
 
 app.use("/admin", adminRoutes);
+app.use("/student", studentRoutes);
 
 // database connection
-mongoose.set("useCreateIndex", true);
-mongoose.connect(
-  `mongodb://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@ds243049.mlab.com:43049/society-management`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
-mongoose.set("useFindAndModify", false);
+db.makeDb();
 
 app.use((req, res, next) => {
   const error = new Error("Not Found");

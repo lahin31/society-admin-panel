@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
-import { Button, Input } from "element-react";
+import React, { useContext, useRef } from "react";
+import { Input } from "element-react";
+import AuthContext from "../contexts/auth-context";
 import "./Login.scss";
 
 const Login = (props) => {
   const email = useRef();
   const password = useRef();
+  const context = useContext(AuthContext);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -19,7 +21,18 @@ const Login = (props) => {
       }),
     })
       .then((res) => res.json())
-      .then((res) => {})
+      .then((res) => {
+        if (!res.error) {
+          context.login(res.accessToken, res.adminId, res.expiresIn);
+          localStorage.setItem("adminInfo", JSON.stringify(res.accessToken));
+          localStorage.setItem("adminId", JSON.stringify(res.adminId));
+          localStorage.setItem(
+            "tokenExpiration",
+            JSON.stringify(res.expiresIn)
+          );
+          props.history.push("/");
+        }
+      })
       .catch((err) => console.log(err));
   };
 
