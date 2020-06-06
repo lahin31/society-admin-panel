@@ -55,7 +55,6 @@ exports.postLogin = async (req, res) => {
 		}
 		
     const token = generateAccessToken(admin);
-    console.log(token);
     const refreshToken = jwt.sign(
       {
         adminId: admin._id,
@@ -63,7 +62,6 @@ exports.postLogin = async (req, res) => {
       },
       process.env.REFRESH_TOKEN_SECRET
     );
-    console.log(refreshToken)
     // saving refresh tokens in an array
     refreshTokens.push(refreshToken);
     return res.status(200).json({

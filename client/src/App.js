@@ -7,9 +7,12 @@ import {
 } from 'react-router-dom';
 import AuthContext from './contexts/auth-context';
 import Login from './pages/Login';
+import Societies from './pages/Societies';
 import Dashboard from './pages/Dashboard';
 import CreateSociety from './pages/CreateSociety';
 import Navigation from './components/navigations/Navigation';
+import LeftSideWrapper from './components/leftSideWrapper/LeftSideWrapper';
+import './App.css';
 
 function App() {
   const [token, setToken] = useState("");
@@ -58,11 +61,20 @@ function App() {
         }}>
         <main className="main-content">
           <Navigation />
-          <Switch>
-            {token && <Route path="/" exact component={Dashboard} />}
-            {token && <Route path="/create_society" component={CreateSociety} />}
-            <Route path="/login" component={Login} />
-          </Switch>
+          <div className="content">
+            { token && (
+              <div className="left_side_wrapper">
+                <LeftSideWrapper />
+              </div>
+            )}
+            <Switch>
+              {token && <Route path="/" exact component={Dashboard} />}
+              {token && <Route path="/create_society" component={CreateSociety} />}
+              {token && <Route path="/societies" component={Societies} />}
+              {!token && <Redirect path="/" exact to="/login" />}
+              {!token && <Route path="/login" component={Login} />}
+            </Switch>
+          </div>
         </main>
       </AuthContext.Provider>
     </Router>

@@ -1,7 +1,20 @@
 .dashboard_wrapper {
 	margin-top: 75px;
+	justify-content: stretch;
+	display: flex;
+	flex-wrap: wrap;
+	height: 100vh;
 
 	.main_content {
-		max-width: 250px;
+		display: flex;
+		flex-wrap: wrap;
+		margin-left: 50px;
+
+		.el-card {
+			height: 120px;
+			max-width: 350px;
+			margin-left: 20px;
+		}
 	}
+
 }

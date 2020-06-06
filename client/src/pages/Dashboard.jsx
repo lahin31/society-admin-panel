@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, Button } from "element-react";
 import "./Dashboard.scss";
 
@@ -19,20 +20,27 @@ const Dashboard = () => {
     fetch("/society/fetch_societies")
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        setSociety(res.societies);
       })
       .catch((err) => console.log(err));
   }, []);
 
   return (
     <div className="dashboard_wrapper">
-      <div className="left_side_wrapper"></div>
       <div className="main_content">
         <Card
           className="box-card"
           header={
             <div className="clearfix">
               <h1>{students.length} Students</h1>
+            </div>
+          }
+        ></Card>
+        <Card
+          className="box-card"
+          header={
+            <div className="clearfix">
+              <h1>{societies.length} Societies</h1>
             </div>
           }
         ></Card>
