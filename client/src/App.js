@@ -13,6 +13,7 @@ import CreateSociety from './pages/CreateSociety';
 import Navigation from './components/navigations/Navigation';
 import LeftSideWrapper from './components/leftSideWrapper/LeftSideWrapper';
 import './App.css';
+import Students from './pages/Students';
 
 function App() {
   const [token, setToken] = useState("");
@@ -71,7 +72,11 @@ function App() {
               {token && <Route path="/" exact component={Dashboard} />}
               {token && <Route path="/create_society" component={CreateSociety} />}
               {token && <Route path="/societies" component={Societies} />}
+              {token && <Route path="/students" component={Students} />}
+              {token && <Redirect path="/login" to="/" />}
               {!token && <Redirect path="/" exact to="/login" />}
+              {!token && <Redirect path="/students" exact to="/login" />}
+              {!token && <Redirect path="/societies" exact to="/login" />}
               {!token && <Route path="/login" component={Login} />}
             </Switch>
           </div>

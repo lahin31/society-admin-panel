@@ -9,3 +9,13 @@
   background: #fff;
   border: 1px solid #BFCBD9;
 }
+
+.left_side_wrapper .active .link {
+  background-color: #5101D1;
+  color: #fff;
+}
+
+.loader_wrap {
+  display: flex;
+  justify-content: center;
+}
