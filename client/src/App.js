@@ -8,6 +8,7 @@ import {
 import AuthContext from './contexts/auth-context';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import CreateSociety from './pages/CreateSociety';
 import Navigation from './components/navigations/Navigation';
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Navigation />
           <Switch>
             {token && <Route path="/" exact component={Dashboard} />}
+            {token && <Route path="/create_society" component={CreateSociety} />}
             <Route path="/login" component={Login} />
           </Switch>
         </main>

@@ -16,6 +16,12 @@ const Dashboard = () => {
       .catch((err) => {
         console.log(err);
       });
+    fetch("/society/fetch_societies")
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (

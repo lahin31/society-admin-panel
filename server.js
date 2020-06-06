@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('./databases');
+const db = require('./db');
 
 const adminRoutes = require('./routings/admin');
+const societyRoutes = require('./routings/society');
 const studentRoutes = require('./routings/student');
 
 require("dotenv").config();
@@ -19,6 +20,7 @@ app.use(
 app.use(cors());
 
 app.use("/admin", adminRoutes);
+app.use("/society", societyRoutes);
 app.use("/student", studentRoutes);
 
 // database connection
