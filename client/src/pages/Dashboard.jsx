@@ -11,7 +11,6 @@ const Dashboard = () => {
     fetch("/student/fetch_students")
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setStudents(res.students);
       })
       .catch((err) => {

@@ -14,6 +14,7 @@ import Navigation from './components/navigations/Navigation';
 import LeftSideWrapper from './components/leftSideWrapper/LeftSideWrapper';
 import './App.css';
 import Students from './pages/Students';
+import Society from './pages/Society';
 
 function App() {
   const [token, setToken] = useState("");
@@ -73,6 +74,7 @@ function App() {
               {token && <Route path="/create_society" component={CreateSociety} />}
               {token && <Route path="/societies" component={Societies} />}
               {token && <Route path="/students" component={Students} />}
+              {token && <Route path="/society/:society_id" component={Society} />}
               {token && <Redirect path="/login" to="/" />}
               {!token && <Redirect path="/" exact to="/login" />}
               {!token && <Redirect path="/students" exact to="/login" />}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { withRouter } from 'react-router-dom';
 import { Card, Button } from "element-react";
 import Loader from "../components/loader/Loader";
 import "./Societies.scss";
@@ -15,6 +16,10 @@ const Societies = (props) => {
       .catch((err) => console.log(err));
   }, []);
 
+  const goToSocietyDetails = society_id => {
+    props.history.push('society/' + society_id);
+  }
+
   return (
     <div className="societies_wrapper">
       <h1>Societies</h1>
@@ -27,7 +32,7 @@ const Societies = (props) => {
           {societies.map((society) => {
             return (
               <Card className="box-card" key={society._id}>
-                <h2>{society.name}</h2>
+                <h2 onClick={() => goToSocietyDetails(society._id)}>{society.name}</h2>
                 <p>{society.description}</p>
               </Card>
             );
@@ -38,4 +43,4 @@ const Societies = (props) => {
   );
 };
 
-export default Societies;
+export default withRouter(Societies);
