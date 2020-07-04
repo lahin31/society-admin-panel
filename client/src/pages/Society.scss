@@ -11,4 +11,17 @@
 			color: #fff;
 		}
 	}
+	.date_time_picker {
+		display: flex;
+		flex-wrap: wrap;
+		.time_picker {
+			margin-left: 15px;
+			margin-right: 15px;
+		}
+	}
+	.notice_created_by {
+		.el-select {
+			width: 100%;
+		}
+	}
 }

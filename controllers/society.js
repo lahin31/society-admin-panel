@@ -58,3 +58,18 @@ exports.getSociety = async(req, res) => {
 		})
 	}
 }
+
+exports.addEvent = async (req, res) => {
+	try {
+		const newEvent = req.body.newEvent;
+		const societyId = req.body.society_id;
+		return res.status(200).json({
+			newEvent,
+			societyId
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
