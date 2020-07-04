@@ -43,3 +43,18 @@ exports.addSociety = async (req, res) => {
 		})
 	}
 }
+
+exports.getSociety = async(req, res) => {
+	try {
+		const societyId = req.params.society_id;
+		const society = await Society.findById({ _id: societyId })
+		return res.status(200).json({
+			societyId,
+			society
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}

@@ -1,4 +1,14 @@
 .society_wrap {
 	width: 100%;
 	margin: 60px 20px 0 20px;
+	.events_wrap, .notices_wrap {
+		.add_event_btn, .add_notice_btn {
+			font-size: 16px;
+			background: gray;
+			padding: 3px;
+			border-radius: 5px;
+			cursor: pointer;
+			color: #fff;
+		}
+	}
 }
