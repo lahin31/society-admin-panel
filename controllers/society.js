@@ -63,9 +63,19 @@ exports.addEvent = async (req, res) => {
 	try {
 		const newEvent = req.body.newEvent;
 		const societyId = req.body.society_id;
+		const society = await Society.findById({ _id: societyId });
+		let events = [...society.events];
+		events.push(newEvent);
+		const updatedSociety = await Society.updateOne(
+      { _id: societyId },
+      {
+        $set: {
+          events,
+        },
+      }
+		);
 		return res.status(200).json({
-			newEvent,
-			societyId
+			message: "Successfully added"
 		})
 	} catch(err) {
 		return res.status(500).json({

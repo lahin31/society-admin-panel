@@ -34,10 +34,10 @@ const Society = (props) => {
 
   const handleAddEvent = () => {
     const newEvent = {
-      eventTitle,
-      eventDesc,
-      event_date,
-      event_time,
+      title: eventTitle,
+      description: eventDesc,
+      date: event_date,
+      time: event_time,
       createBy
     }
     fetch('/society/add_event', {

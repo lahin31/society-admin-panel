@@ -19,10 +19,11 @@ const societySchema = new Schema({
 	events: [
 		{
 			title: String,
-			picture: String,
+			description: String,
 			registered_members: [],
 			date: String,
-			time: String
+			time: String,
+			createBy: String
 		}
 	],
 	notice: [
