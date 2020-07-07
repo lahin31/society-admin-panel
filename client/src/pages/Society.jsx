@@ -23,6 +23,14 @@ const Society = (props) => {
   const [event_time, setEventTime] = useState(null);
   const [createBy, setCreatedBy] = useState(null)
   const { society_id } = useParams();
+  const [dept] = useState({
+    cse: "Computer Science and Engineering",
+    eee: "Electrical and Electronics Engineering",
+    bba: "Business Administration",
+    eco: "Economics",
+    eng: "English",
+    jms: "Journalism and Media Studies"
+  });
 
   useEffect(() => {
     fetch(`/society/get_society/${society_id}`)
@@ -50,22 +58,68 @@ const Society = (props) => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
+        setEventDialogVisible(false);
+        fetch(`/society/get_society/${society_id}`)
+          .then(res => res.json())
+          .then(res => {
+            setSociety(res.society)
+            setEventTitle("");
+            setEventDesc("");
+            setEventDate(null);
+            setEventTime(null);
+            setCreatedBy(null);
+          })
       })
       .catch(err => console.log(err))
-  }  
+  }
+
+  const handleDeleteEvent = id => {
+    fetch('/society/delete_socity_event', {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_id: id,
+        society_id
+      }),
+    })
+      .then(res => res.json())
+      .then(res => {
+        if(res.message === "Deleted") {
+          fetch(`/society/get_society/${society_id}`)
+            .then(res => res.json())
+            .then(res => {
+              setSociety(res.society)
+            })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const handleAddNotice = () => {}
 
   return (
     <div className="society_wrap">
       <h1 className="society_title">{society.name}</h1>
       <div className="events_wrap">
-        <h2>Events <span className="add_event_btn" onClick={() => setEventDialogVisible(true)}>Add</span></h2>
+        <h2>Events <span className="add_event_btn" onClick={() => setEventDialogVisible(true)}>Add New</span></h2>
         <div className="events">
           {society.events && society.events.length === 0 && <p>No events for this society</p>}
+          {society.events && society.events.map(ev => {
+            return (
+              <div className="event" key={ev._id}>
+                <div className="event_title">{ev.title}<span className="delete_icon" onClick={() => handleDeleteEvent(ev._id)}>X</span></div>
+                <span className="event_date_time">{ev.date.substr(0, 10)}, {ev.time.substr(11, 8)}</span><br />
+                <span className="event_dept">{dept[ev.createBy]}</span>
+                <p className="event_description">{ev.description}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
       <div className="notices_wrap">
-        <h2>Notices <span className="add_notice_btn" onClick={() => setNoticeDialogVisible(true)}>Add</span></h2>
+        <h2>Notices <span className="add_notice_btn" onClick={() => setNoticeDialogVisible(true)}>Add New</span></h2>
         <div className="events">
           {society.notice && society.notice.length === 0 && <p>No notices for this society</p>}
         </div>

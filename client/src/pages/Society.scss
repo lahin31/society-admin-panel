@@ -10,6 +10,27 @@
 			cursor: pointer;
 			color: #fff;
 		}
+		.events {
+			.event {
+				border: 1px solid;
+				border-radius: 3px;
+				padding: 5px;
+				margin-top: 5px;
+				.event_title {
+					font-size: 22px;
+					font-weight: 500;
+					.delete_icon {
+						float: right;
+						font-size: 16px;
+						cursor: pointer;
+					}
+				}
+				.event_date_time,
+				.event_dept {
+					color: gray;
+				}
+			}
+		}
 	}
 	.date_time_picker {
 		display: flex;

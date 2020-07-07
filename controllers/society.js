@@ -83,3 +83,30 @@ exports.addEvent = async (req, res) => {
 		})
 	}
 }
+
+exports.deleteSocietyEvent = async (req, res) => {
+	try {
+		const event_id = req.body.event_id;
+		const societyId = req.body.society_id;
+
+		const society = await Society.findById({ _id: societyId });
+		let events = [...society.events];
+		let index = events.findIndex(ev => ev.id === event_id);
+		events.splice(index, 1);
+		const updatedSociety = await Society.updateOne(
+      { _id: societyId },
+      {
+        $set: {
+          events,
+        },
+      }
+		);
+		return res.status(200).json({
+			message: "Deleted"
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}

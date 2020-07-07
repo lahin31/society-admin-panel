@@ -4,7 +4,7 @@
 
 .left_side_wrapper {
   width: 16%;
-  height: 100vh;
+  height: auto;
   margin-top: 60px;
   background: #fff;
   border: 1px solid #BFCBD9;
