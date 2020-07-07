@@ -110,3 +110,55 @@ exports.deleteSocietyEvent = async (req, res) => {
 		})
 	}
 }
+
+exports.addNotice = async (req, res) => {
+	try {
+		const newNotice = req.body.newNotice;
+		const societyId = req.body.society_id;
+		const society = await Society.findById({ _id: societyId });
+		let notices = [...society.notices];
+		notices.push(newNotice);
+		const updatedSociety = await Society.updateOne(
+      { _id: societyId },
+      {
+        $set: {
+          notices,
+        },
+      }
+		);
+		return res.status(200).json({
+			message: "Successfully added"
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
+
+exports.deleteSocietyNotice = async (req, res) => {
+	try {
+		const notice_id = req.body.notice_id;
+		const societyId = req.body.society_id;
+
+		const society = await Society.findById({ _id: societyId });
+		let notices = [...society.notices];
+		let index = notices.findIndex(ev => ev.id === notice_id);
+		notices.splice(index, 1);
+		const updatedSociety = await Society.updateOne(
+      { _id: societyId },
+      {
+        $set: {
+          notices,
+        },
+      }
+		);
+		return res.status(200).json({
+			message: "Deleted"
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}

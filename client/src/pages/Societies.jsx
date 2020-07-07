@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from 'react-router-dom';
-import { Card, Button } from "element-react";
+import { Card } from "element-react";
 import Loader from "../components/loader/Loader";
 import "./Societies.scss";
 

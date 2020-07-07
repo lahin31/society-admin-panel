@@ -26,11 +26,11 @@ const societySchema = new Schema({
 			createBy: String
 		}
 	],
-	notice: [
+	notices: [
 		{
-			status: Boolean,
 			title: String,
-			description: String
+			description: String,
+			createdBy: String
 		}
 	]
 });

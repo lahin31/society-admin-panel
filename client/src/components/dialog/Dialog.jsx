@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog } from "element-react";
+import { Dialog } from "element-react";
 
 const DialogComponent = props => {
 	return (

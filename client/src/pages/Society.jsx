@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button, Dialog, Input, DatePicker, TimeSelect, Select } from "element-react";
 import "./Society.scss";
 import DialogComponent from "../components/dialog/Dialog";
@@ -21,7 +21,10 @@ const Society = (props) => {
   const [eventDesc, setEventDesc] = useState("");
   const [event_date, setEventDate] = useState(null);
   const [event_time, setEventTime] = useState(null);
-  const [createBy, setCreatedBy] = useState(null)
+  const [createBy, setCreatedBy] = useState(null);
+  const [noticeTitle, setNoticeTitle] = useState("");
+  const [noticeDescription, setNoticeDescription] = useState("");
+  const [noticeCreatedBy, setNoticeCreatedBy] = useState(null);
   const { society_id } = useParams();
   const [dept] = useState({
     cse: "Computer Science and Engineering",
@@ -56,8 +59,8 @@ const Society = (props) => {
         society_id
       }),
     })
-      .then(res => res.json())
-      .then(res => {
+      .then( res => res.json() )
+      .then( res => {
         setEventDialogVisible(false);
         fetch(`/society/get_society/${society_id}`)
           .then(res => res.json())
@@ -70,11 +73,11 @@ const Society = (props) => {
             setCreatedBy(null);
           })
       })
-      .catch(err => console.log(err))
+      .catch( err => console.log(err) )
   }
 
   const handleDeleteEvent = id => {
-    fetch('/society/delete_socity_event', {
+    fetch('/society/delete_society_event', {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -87,17 +90,60 @@ const Society = (props) => {
         if(res.message === "Deleted") {
           fetch(`/society/get_society/${society_id}`)
             .then(res => res.json())
-            .then(res => {
-              setSociety(res.society)
-            })
+            .then(res => setSociety(res.society))
+            .catch(err => console.log(err));
         }
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(err => console.log(err));
   }
 
-  const handleAddNotice = () => {}
+  const handleAddNotice = () => {
+    const newNotice = {
+      title: noticeTitle,
+      description: noticeDescription,
+      createdBy: noticeCreatedBy
+    }
+
+    fetch("/society/add_notice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newNotice, society_id })
+    })
+      .then( res => res.json() )
+      .then( res => {
+        setNoticeDialogVisible(false);
+        fetch(`/society/get_society/${society_id}`)
+          .then(res => res.json())
+          .then(res => {
+            setSociety(res.society)
+            setNoticeTitle("");
+            setNoticeDescription("");
+            setNoticeCreatedBy(null);
+          })
+      })
+      .catch( err => console.log(err) )
+  }
+
+  const handleDeleteNotice = id => {
+    fetch('/society/delete_society_notice', {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        notice_id: id,
+        society_id
+      }),
+    })
+      .then( res => res.json() )
+      .then( res => {
+        if( res.message === "Deleted" ) {
+          fetch(`/society/get_society/${society_id}`)
+            .then(res => res.json())
+            .then(res => setSociety(res.society))
+            .catch(err => console.log(err));
+        }
+      })
+      .catch( err => console.log(err) );
+  }
 
   return (
     <div className="society_wrap">
@@ -106,7 +152,7 @@ const Society = (props) => {
         <h2>Events <span className="add_event_btn" onClick={() => setEventDialogVisible(true)}>Add New</span></h2>
         <div className="events">
           {society.events && society.events.length === 0 && <p>No events for this society</p>}
-          {society.events && society.events.map(ev => {
+          {society.events && society.events.length > 0 && society.events.map(ev => {
             return (
               <div className="event" key={ev._id}>
                 <div className="event_title">{ev.title}<span className="delete_icon" onClick={() => handleDeleteEvent(ev._id)}>X</span></div>
@@ -120,8 +166,17 @@ const Society = (props) => {
       </div>
       <div className="notices_wrap">
         <h2>Notices <span className="add_notice_btn" onClick={() => setNoticeDialogVisible(true)}>Add New</span></h2>
-        <div className="events">
-          {society.notice && society.notice.length === 0 && <p>No notices for this society</p>}
+        <div className="notices">
+          {society.notices && society.notices.length === 0 && <p>No notices for this society</p>}
+          {society.notices && society.notices.length > 0 && society.notices.map(ev => {
+            return (
+              <div className="notice" key={ev._id}>
+                <div className="event_title">{ev.title}<span className="delete_icon" onClick={() => handleDeleteNotice(ev._id)}>X</span></div>
+                <span className="event_dept">{dept[ev.createdBy]}</span>
+                <p className="event_description">{ev.description}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
       <div className="members_wrap">
@@ -193,22 +248,34 @@ const Society = (props) => {
         <Dialog.Body>
           <div className="form_group">
             <label htmlFor="notice_title">Notice Title</label>
-            <Input placeholder="Notice Title" id="notice_title" className="form_control" required />
+            <Input 
+              placeholder="Notice Title" 
+              id="notice_title" 
+              className="form_control"
+              value={noticeTitle}
+              onChange={e => setNoticeTitle(e)}
+            />
           </div>
           <div className="form_group">
             <label htmlFor="notice_desciption">Notice Description</label>
-            <Input type="textarea" placeholder="Notice Description" id="notice_desciption" required />
+            <Input 
+              type="textarea" 
+              placeholder="Notice Description" 
+              id="notice_desciption"
+              value={noticeDescription}
+              onChange={e => setNoticeDescription(e)}
+            />
           </div>
           <div className="event_created_by_wrap notice_created_by">
             <label htmlFor="created_by">Created By</label><br />
-            <Select value={createBy} placeholder="Created by">
+            <Select value={noticeCreatedBy} onChange={e => setNoticeCreatedBy(e)} placeholder="Created by">
               { createdByOptions.map(el =>  <Select.Option key={el.value} label={el.label} value={el.value} />) }
             </Select>
           </div>
         </Dialog.Body>
         <Dialog.Footer className="dialog-footer">
           <Button onClick={ () => setNoticeDialogVisible(false) }>Cancel</Button>
-          <Button type="primary" onClick={ () => setNoticeDialogVisible(false) }>Add</Button>
+          <Button type="primary" onClick={handleAddNotice}>Add</Button>
         </Dialog.Footer>
       </DialogComponent>
     </div>

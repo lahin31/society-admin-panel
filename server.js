@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression');
 const db = require('./db');
 
 const adminRoutes = require('./routings/admin');
@@ -18,6 +19,7 @@ app.use(
   })
 );
 app.use(cors());
+app.use(compression());
 
 app.use("/admin", adminRoutes);
 app.use("/society", societyRoutes);

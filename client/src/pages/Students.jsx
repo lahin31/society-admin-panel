@@ -5,7 +5,7 @@ import "./Students.scss";
 
 const Students = (props) => {
   const [students, setStudents] = useState([]);
-  const [columns, setColumns] = useState([
+  const [columns] = useState([
     { label: "Name", prop: "name" },
     { label: "Username", prop: "username" },
     { label: "Email", prop: "email" },
@@ -13,6 +13,7 @@ const Students = (props) => {
     { label: "ID", prop: "std_id" },
     { label: "Department", prop: "department" },
   ]);
+  
   useEffect(() => {
     fetch("/student/fetch_students")
       .then((res) => res.json())
