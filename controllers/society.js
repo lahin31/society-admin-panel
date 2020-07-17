@@ -27,10 +27,7 @@ exports.addSociety = async (req, res) => {
 			})
 		}
 
-		const society = new Society({
-			name,
-			description
-		})
+		const society = new Society({ name, description });
 
 		await society.save();
 
@@ -76,6 +73,42 @@ exports.addEvent = async (req, res) => {
 		);
 		return res.status(200).json({
 			message: "Successfully added"
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
+
+exports.fetchEditEvent = async (req, res) => {
+	try {
+		const event_id = req.body.event_id;
+		const societyId = req.body.society_id;
+		const society = await Society.findById({ _id: societyId });
+		const event_index = society.events.findIndex(ev => ev.id === event_id);
+		const event = society.events[event_index];
+
+		return res.status(200).json({
+			event
+		})
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
+
+exports.fetchEditNotice = async (req, res) => {
+	try {
+		const notice_id = req.body.notice_id;
+		const societyId = req.body.society_id;
+		const society = await Society.findById({ _id: societyId });
+		const notice_index = society.notices.findIndex(ev => ev.id === notice_id);
+		const notice = society.notices[notice_index];
+
+		return res.status(200).json({
+			notice
 		})
 	} catch(err) {
 		return res.status(500).json({

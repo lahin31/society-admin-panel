@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Card, Button } from "element-react";
+import { Card } from "element-react";
 import "./Dashboard.scss";
 
 const Dashboard = () => {
@@ -13,9 +12,8 @@ const Dashboard = () => {
       .then((res) => {
         setStudents(res.students);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
+
     fetch("/society/fetch_societies")
       .then((res) => res.json())
       .then((res) => {

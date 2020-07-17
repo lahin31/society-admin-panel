@@ -34,7 +34,7 @@ function App() {
       setAdminId(adminIdLocal);
       setTokenExpiration(tokenExp);
     }
-  })
+  }, [])
 
   const login = (token, adminId, tokenExpiratopn) => {
     setToken(token);
