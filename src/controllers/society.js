@@ -22,7 +22,7 @@ exports.addSociety = async (req, res) => {
 		const admin = await Admin.findById({ _id: adminId });
 		
 		if(!name || !admin) {
-			return res.status(500).json({
+			return res.status(404).json({
 				error: "Something went wrong"
 			})
 		}
@@ -31,7 +31,7 @@ exports.addSociety = async (req, res) => {
 
 		await society.save();
 
-		return res.status(200).json({
+		return res.status(201).json({
 			message: "Added Successfully"
 		})
 	} catch(err) {
@@ -44,7 +44,14 @@ exports.addSociety = async (req, res) => {
 exports.getSociety = async(req, res) => {
 	try {
 		const societyId = req.params.society_id;
-		const society = await Society.findById({ _id: societyId })
+		const society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "Not found"
+			})
+		}
+
 		return res.status(200).json({
 			societyId,
 			society
@@ -61,6 +68,13 @@ exports.addEvent = async (req, res) => {
 		const newEvent = req.body.newEvent;
 		const societyId = req.body.society_id;
 		const society = await Society.findById({ _id: societyId });
+		
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let events = [...society.events];
 		events.push(newEvent);
 		await Society.updateOne(
@@ -71,7 +85,7 @@ exports.addEvent = async (req, res) => {
         },
       }
 		);
-		return res.status(200).json({
+		return res.status(201).json({
 			message: "Successfully added"
 		})
 	} catch(err) {
@@ -86,6 +100,13 @@ exports.fetchEditEvent = async (req, res) => {
 		const event_id = req.body.event_id;
 		const societyId = req.body.society_id;
 		const society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		const event_index = society.events.findIndex(ev => ev.id === event_id);
 		const event = society.events[event_index];
 
@@ -106,6 +127,13 @@ exports.updateEvent = async (req, res) => {
 		const updatedEvent = req.body.updatedEvent;
 
 		let society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let events = [...society.events];
 		let index = events.findIndex(ev => ev.id === eventId);
 		events[index].title = updatedEvent.title;
@@ -126,10 +154,17 @@ exports.deleteSocietyEvent = async (req, res) => {
 		const societyId = req.body.society_id;
 
 		const society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let events = [...society.events];
 		let index = events.findIndex(ev => ev.id === event_id);
 		events.splice(index, 1);
-		const updatedSociety = await Society.updateOne(
+		await Society.updateOne(
       { _id: societyId },
       {
         $set: {
@@ -152,9 +187,16 @@ exports.addNotice = async (req, res) => {
 		const newNotice = req.body.newNotice;
 		const societyId = req.body.society_id;
 		const society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let notices = [...society.notices];
 		notices.push(newNotice);
-		const updatedSociety = await Society.updateOne(
+		await Society.updateOne(
       { _id: societyId },
       {
         $set: {
@@ -162,7 +204,7 @@ exports.addNotice = async (req, res) => {
         },
       }
 		);
-		return res.status(200).json({
+		return res.status(201).json({
 			message: "Successfully added"
 		})
 	} catch(err) {
@@ -177,6 +219,13 @@ exports.fetchEditNotice = async (req, res) => {
 		const notice_id = req.body.notice_id;
 		const societyId = req.body.society_id;
 		const society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		const notice_index = society.notices.findIndex(ev => ev.id === notice_id);
 		const notice = society.notices[notice_index];
 
@@ -197,6 +246,13 @@ exports.updateNotice = async (req, res) => {
 		const updatedNotice = req.body.updatedNotice;
 
 		let society = await Society.findById({ _id: societyId });
+
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let notices = [...society.notices];
 		let index = notices.findIndex(ev => ev.id === noticeId);
 		notices[index].title = updatedNotice.title;
@@ -217,12 +273,18 @@ exports.deleteSocietyNotice = async (req, res) => {
 	try {
 		const notice_id = req.body.notice_id;
 		const societyId = req.body.society_id;
-
 		const society = await Society.findById({ _id: societyId });
+		
+		if(!society) {
+			return res.status(404).json({
+				message: "No society found"
+			})
+		}
+
 		let notices = [...society.notices];
 		let index = notices.findIndex(ev => ev.id === notice_id);
 		notices.splice(index, 1);
-		const updatedSociety = await Society.updateOne(
+		await Society.updateOne(
       { _id: societyId },
       {
         $set: {

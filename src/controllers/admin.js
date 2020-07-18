@@ -43,13 +43,13 @@ exports.postLogin = async (req, res) => {
     });
 
     if (!admin) {
-      return res.status(401).json({
+      return res.status(400).json({
         error: "Email or Password isn't matched lahin",
       });
 		}
 
     if (admin.password !== password) {
-      return res.status(500).json({
+      return res.status(400).json({
         error: "Email or Password isn't matched lahin",
       });
 		}
