@@ -63,7 +63,7 @@ exports.addEvent = async (req, res) => {
 		const society = await Society.findById({ _id: societyId });
 		let events = [...society.events];
 		events.push(newEvent);
-		const updatedSociety = await Society.updateOne(
+		await Society.updateOne(
       { _id: societyId },
       {
         $set: {
