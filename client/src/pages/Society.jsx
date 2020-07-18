@@ -25,6 +25,7 @@ const Society = (props) => {
   const [society, setSociety] = useState({});
   const [eventDialogVisible, setEventDialogVisible] = useState(false);
   const [noticeDialogVisible, setNoticeDialogVisible] = useState(false);
+  const [selectedNoticeId, setSelectedNoticeId] = useState("");
   const [selectedEventId, setSelectedEventId] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [eventDesc, setEventDesc] = useState("");
@@ -62,14 +63,18 @@ const Society = (props) => {
     };
   }, [society_id]);
 
-  const openDialogForAddEvent = () => {
-    setEventDialogVisible(true);
-    setEventDialogTitle("Add Event");
+  const makeEventPropertyEmpty = () => {
     setEventTitle("");
     setEventDesc("");
     setEventDate(null);
     setEventTime(null);
     setCreatedBy(null);
+  };
+
+  const openDialogForAddEvent = () => {
+    setEventDialogVisible(true);
+    setEventDialogTitle("Add Event");
+    makeEventPropertyEmpty();
   };
 
   const handleAddEvent = () => {
@@ -98,11 +103,7 @@ const Society = (props) => {
           .then((res) => res.json())
           .then((res) => {
             setSociety(res.society);
-            setEventTitle("");
-            setEventDesc("");
-            setEventDate(null);
-            setEventTime(null);
-            setCreatedBy(null);
+            makeEventPropertyEmpty();
           });
       })
       .catch((err) => console.log(err));
@@ -222,8 +223,9 @@ const Society = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const handleEditNotice = (id) => {
+  const fetchNoticeForEdit = (id) => {
     setNoticeDialogVisible(true);
+    setSelectedNoticeId(id);
     setNoticeDialogTitle("Edit Notice");
     fetch("/society/fetch_edit_notice", {
       method: "POST",
@@ -241,6 +243,40 @@ const Society = (props) => {
         setNoticeCreatedBy(res.notice.createdBy);
         setNoticeTitle(res.notice.title);
         setNoticeDescription(res.notice.description);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const updateNotice = () => {
+    const updatedNotice = {
+      title: noticeTitle,
+      description: noticeDescription,
+      createdBy: noticeCreatedBy,
+    };
+
+    fetch("/society/update_notice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        notice_id: selectedNoticeId,
+        society_id,
+        updatedNotice,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "Updated") {
+          setSelectedNoticeId(null);
+          setNoticeDialogVisible(false);
+          fetch(`/society/get_society/${society_id}`)
+            .then((res) => res.json())
+            .then((res) => {
+              setSociety(res.society);
+            });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -350,7 +386,7 @@ const Society = (props) => {
                     </span>
                     <span
                       className="edit_icon"
-                      onClick={() => handleEditNotice(nt._id)}
+                      onClick={() => fetchNoticeForEdit(nt._id)}
                     >
                       <i className="el-icon-edit"></i>
                     </span>
@@ -493,8 +529,15 @@ const Society = (props) => {
         </Dialog.Body>
         <Dialog.Footer className="dialog-footer">
           <Button onClick={() => setNoticeDialogVisible(false)}>Cancel</Button>
-          <Button type="primary" onClick={handleAddNotice}>
-            Add
+          <Button
+            type="primary"
+            onClick={
+              noticeDialogTitle === "Add Notice"
+                ? handleAddNotice
+                : updateNotice
+            }
+          >
+            {noticeDialogTitle}
           </Button>
         </Dialog.Footer>
       </DialogComponent>
