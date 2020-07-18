@@ -1,6 +1,10 @@
 .login_wrapper {
   width: 33%;
   margin: 0 auto;
+
+  .status_wrapper {
+    margin-bottom: 25px;
+  }
 }
 
 #login_wrapper {
@@ -11,6 +15,7 @@
   .form_group:nth-child(2) {
     margin-top: 15px;
   }
+
   .login_action_btn {
     margin-top: 20px;
     -webkit-font-smoothing: antialiased;
@@ -31,6 +36,7 @@
     border-radius: 4px;
     margin-top: 20px;
   }
+
   .el-input {
     margin-top: 5px;
   }

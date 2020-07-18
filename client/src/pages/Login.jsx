@@ -1,11 +1,12 @@
-import React, { useContext, useRef } from "react";
-import { Input } from "element-react";
+import React, { useContext, useRef, useState } from "react";
+import { Alert, Input } from "element-react";
 import AuthContext from "../contexts/auth-context";
 import "./Login.scss";
 
 const Login = (props) => {
   const email = useRef();
   const password = useRef();
+  const [status, setStatus] = useState("");
   const context = useContext(AuthContext);
 
   const handleLogin = (e) => {
@@ -22,7 +23,7 @@ const Login = (props) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (!res.error) {
+        if (res.message !== "Email or Password isn't matched") {
           context.login(res.accessToken, res.adminId, res.expiresIn);
           localStorage.setItem("adminInfo", JSON.stringify(res.accessToken));
           localStorage.setItem("adminId", JSON.stringify(res.adminId));
@@ -31,6 +32,8 @@ const Login = (props) => {
             JSON.stringify(res.expiresIn)
           );
           props.history.push("/");
+        } else {
+          setStatus(res.message);
         }
       })
       .catch((err) => console.log(err));
@@ -38,6 +41,9 @@ const Login = (props) => {
 
   return (
     <div className="login_wrapper" id="login_wrapper">
+      {status !== "" && (
+        <Alert title={status} type="error" className="status_wrapper" />
+      )}
       <form className="login_form" onSubmit={handleLogin}>
         <div className="form_group">
           <label htmlFor="email">Email</label>
