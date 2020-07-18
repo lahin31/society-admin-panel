@@ -11,6 +11,7 @@ router.post('/add_notice', checkAuth, societyController.addNotice);
 router.post('/fetch_edit_event', checkAuth, societyController.fetchEditEvent);
 router.post('/fetch_edit_notice', checkAuth, societyController.fetchEditNotice);
 router.post('/add_society', checkAuth, societyController.addSociety);
+router.post('/update_event', checkAuth, societyController.updateEvent);
 router.delete('/delete_society_event', checkAuth, societyController.deleteSocietyEvent);
 router.delete('/delete_society_notice', checkAuth, societyController.deleteSocietyNotice);
 

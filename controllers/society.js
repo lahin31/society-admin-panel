@@ -117,6 +117,27 @@ exports.fetchEditNotice = async (req, res) => {
 	}
 }
 
+exports.updateEvent = async (req, res) => {
+	try {
+		const eventId = req.body.event_id;
+		const societyId = req.body.society_id;
+		const updatedEvent = req.body.updatedEvent;
+
+		let society = await Society.findById({ _id: societyId });
+		let events = [...society.events];
+		let index = events.findIndex(ev => ev.id === eventId);
+		events[index].title = updatedEvent.title;
+		events[index].description = updatedEvent.description;
+		events[index].createBy = updatedEvent.createBy;
+
+		await society.updateOne({ events });
+
+		return res.status(200).json({ message: "Updated" })
+	} catch(err) {
+		return res.status(500).json({ error: err })
+	}
+}
+
 exports.deleteSocietyEvent = async (req, res) => {
 	try {
 		const event_id = req.body.event_id;

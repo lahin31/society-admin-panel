@@ -25,6 +25,7 @@ const Society = (props) => {
   const [society, setSociety] = useState({});
   const [eventDialogVisible, setEventDialogVisible] = useState(false);
   const [noticeDialogVisible, setNoticeDialogVisible] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [eventDesc, setEventDesc] = useState("");
   const [event_date, setEventDate] = useState(null);
@@ -47,12 +48,29 @@ const Society = (props) => {
   });
 
   useEffect(() => {
+    let isMounted = true;
     fetch(`/society/get_society/${society_id}`)
       .then((res) => res.json())
       .then((res) => {
-        setSociety(res.society);
+        if (isMounted) {
+          setSociety(res.society);
+        }
       });
+    return () => {
+      // eslint-disable-next-line
+      isMounted = false;
+    };
   }, [society_id]);
+
+  const openDialogForAddEvent = () => {
+    setEventDialogVisible(true);
+    setEventDialogTitle("Add Event");
+    setEventTitle("");
+    setEventDesc("");
+    setEventDate(null);
+    setEventTime(null);
+    setCreatedBy(null);
+  };
 
   const handleAddEvent = () => {
     const newEvent = {
@@ -90,7 +108,8 @@ const Society = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const handleEditEvent = (id) => {
+  const fetchEventForEdit = (id) => {
+    setSelectedEventId(id);
     setEventDialogVisible(true);
     setEventDialogTitle("Edit Event");
     fetch("/society/fetch_edit_event", {
@@ -109,6 +128,42 @@ const Society = (props) => {
         setEventTitle(res.event.title);
         setEventDesc(res.event.description);
         setCreatedBy(res.event.createBy);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleEditEvent = () => {
+    const updatedEvent = {
+      title: eventTitle,
+      description: eventDesc,
+      date: event_date,
+      time: event_time,
+      createBy,
+    };
+
+    fetch("/society/update_event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        event_id: selectedEventId,
+        society_id,
+        updatedEvent,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "Updated") {
+          setSelectedEventId(null);
+          setEventDialogVisible(false);
+          fetch(`/society/get_society/${society_id}`)
+            .then((res) => res.json())
+            .then((res) => {
+              setSociety(res.society);
+            });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -222,9 +277,8 @@ const Society = (props) => {
           Events{" "}
           <span
             className="add_event_btn"
-            onClick={() =>
-              setEventDialogVisible(true) || setEventDialogTitle("Add Event")
-            }
+            onClick={openDialogForAddEvent}
+            tabIndex="0"
           >
             Add New
           </span>
@@ -248,7 +302,7 @@ const Society = (props) => {
                     </span>
                     <span
                       className="edit_icon"
-                      onClick={() => handleEditEvent(ev._id)}
+                      onClick={() => fetchEventForEdit(ev._id)}
                     >
                       <i className="el-icon-edit"></i>
                     </span>
@@ -272,6 +326,7 @@ const Society = (props) => {
             onClick={() =>
               setNoticeDialogVisible(true) || setNoticeDialogTitle("Add Notice")
             }
+            tabIndex="0"
           >
             Add New
           </span>
@@ -380,8 +435,15 @@ const Society = (props) => {
         </Dialog.Body>
         <Dialog.Footer className="dialog-footer">
           <Button onClick={() => setEventDialogVisible(false)}>Cancel</Button>
-          <Button type="primary" onClick={handleAddEvent}>
-            Add
+          <Button
+            type="primary"
+            onClick={
+              eventDialogTitle === "Add Event"
+                ? handleAddEvent
+                : handleEditEvent
+            }
+          >
+            {eventDialogTitle}
           </Button>
         </Dialog.Footer>
       </DialogComponent>
