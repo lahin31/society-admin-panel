@@ -6,7 +6,7 @@ import { Society } from '../types/society';
 import Loader from '../components/loader/Loader';
 import './Societies.scss'
 
-const Societies = () => {
+const Societies: React.FC = () => {
 	const [societies, setSociety] = useState<Society[]>([]);
 
   useEffect(() => {
@@ -14,7 +14,6 @@ const Societies = () => {
       .then((res) => res.json())
       .then((res) => {
 				setSociety(res.societies);
-				console.log(res)
       })
       .catch((err) => console.log(err));
 	}, []);

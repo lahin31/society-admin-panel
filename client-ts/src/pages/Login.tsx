@@ -65,7 +65,6 @@ const Login: React.FC<LoginComponentProps> = ({ history }) => {
 				}
 			})
 			.catch((err) => console.log(err));
-		// history.push('/dashboard');
 	}
 
 	return (
