@@ -6,12 +6,12 @@ import './Navigation.scss'
 interface NavComponentProps extends RouteComponentProps<any> {}
 
 const Navigation: React.FC<NavComponentProps> = ({ history }) => {
-	const context = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  
   const handleLogout = () => {
     context.logout();
     history.push("/login");
-	};
-	
+  };
 	return (
     <header className="main-navigation">
       <div className="main-navigation__logo">

@@ -14,4 +14,4 @@ const Loader: React.FC<LoaderProps> = ({ width, height }) => {
   );
 };
 
-export default memo(Loader);
+export default Loader;

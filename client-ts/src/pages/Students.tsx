@@ -30,15 +30,20 @@ const Students = () => {
 	const classes = useStyles();
 	
 	useEffect(() => {
+		let isMounted = true;
     fetch("/student/fetch_students")
       .then((res) => res.json())
       .then((res) => {
-				console.log(res.students)
-        setStudents(res.students);
+        if(isMounted) {
+					setStudents(res.students);
+				}
       })
       .catch((err) => {
         console.log(err);
-      });
+			});
+		return () => {
+			isMounted = false;
+		}
 	}, []);
 	
 	return (
