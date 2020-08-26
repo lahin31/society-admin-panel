@@ -15,6 +15,7 @@ import Navigation from './components/navigations/Navigation';
 import LeftSideWrapper from './components/leftSideWrapper/LeftSideWrapper';
 import Students from './pages/Students';
 import CreateSociety from './pages/CreateSociety';
+import Society from './pages/Society';
 
 function App() {
   const [token, setToken] = useState<string>('');
@@ -79,6 +80,7 @@ function App() {
               {token && <Route path="/societies" component={Societies} />}
               {token && <Route path="/students" component={Students} />}
               {token && <Route path="/create_society" component={CreateSociety} />}
+              {token && <Route path="/society/:society_id" component={Society} />}
               {!token && <Route path="/login" component={Login} />}
             </Switch>
           </div>

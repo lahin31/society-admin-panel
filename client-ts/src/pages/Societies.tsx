@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { Society } from '../types/society';
 import Loader from '../components/loader/Loader';
 import './Societies.scss'
 
-const Societies: React.FC = () => {
+interface SocietiesProps extends RouteComponentProps<any> {}
+
+
+const Societies: React.FC<SocietiesProps> = ({ history }) => {
 	const [societies, setSociety] = useState<Society[]>([]);
 
   useEffect(() => {
+		let isMounted = true;
     fetch("/society/fetch_societies")
       .then((res) => res.json())
       .then((res) => {
-				setSociety(res.societies);
+				if(isMounted) {
+					setSociety(res.societies);
+				}
       })
-      .catch((err) => console.log(err));
+			.catch((err) => console.log(err));
+		return () => {
+			isMounted = false;
+		}
 	}, []);
+
+	const goToSocietyDetails = (society_id: string) => {
+    history.push('society/' + society_id);
+  }
 	
 	return (
 		<div className="societies_wrapper">
@@ -30,7 +43,7 @@ const Societies: React.FC = () => {
 					{ societies.map(society => (
 						<Card variant="outlined" className="card society_card" key={society._id}>
 							<CardContent>
-								<h2>{society.name}</h2>
+								<h2 onClick={() => goToSocietyDetails(society._id)}>{society.name}</h2>
 								<p>{society.description}</p>
 							</CardContent>
 						</Card>
