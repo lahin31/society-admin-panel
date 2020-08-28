@@ -1,8 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from "react-router-dom";
 import AuthContext from '../contexts/auth-context';
+import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import DialogActions from '@material-ui/core/DialogActions';
 import { Society, Event } from '../types/society';
 import './Society.scss';
 
@@ -14,6 +23,15 @@ interface DeptType {
 	"eng": string;
 	"jms": string;
 }
+
+const createdByOptions = [
+  { value: "cse", label: "Computer Science and Engineering" },
+  { value: "eee", label: "Electrical and Electronics Engineering" },
+  { value: "bba", label: "Business Administration" },
+  { value: "eco", label: "Economics" },
+  { value: "eng", label: "English" },
+  { value: "jms", label: "Journalism and Media Studies" },
+];
 
 const SocietyPage = () => {
 	const [society, setSociety] = useState<Society>({
@@ -33,6 +51,13 @@ const SocietyPage = () => {
     "eng": "English",
     "jms": "Journalism and Media Studies",
   });
+  const [eventDialogVisible, setEventDialogVisible] = useState<boolean>(false);
+  const [eventTitle, setEventTitle] = useState<string>("");
+  const [eventDesc, setEventDesc] = useState<string>("");
+  const [event_date, setEventDate] = useState<string>("");
+  const [event_time, setEventTime] = useState<string>("");
+  const [createBy, setCreatedBy] = useState<string>("");
+
 
 	useEffect(() => {
     let isMounted = true;
@@ -51,7 +76,7 @@ const SocietyPage = () => {
 
 	const fetchEventForEdit = (id: string) => {
     // setSelectedEventId(id);
-    // setEventDialogVisible(true);
+    setEventDialogVisible(true);
     // setEventDialogTitle("Edit Event");
     fetch("/society/fetch_edit_event", {
       method: "POST",
@@ -66,9 +91,10 @@ const SocietyPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        // setEventTitle(res.event.title);
-        // setEventDesc(res.event.description);
+        setEventTitle(res.event.title);
+        setEventDesc(res.event.description);
         // setCreatedBy(res.event.createBy);
+        console.log(res)
       })
       .catch((err) => console.log(err));
   };
@@ -123,7 +149,11 @@ const SocietyPage = () => {
 	
 	function generateDept<DeptType, K extends keyof DeptType>(dept: DeptType, dept_str: K) {
 		return dept[dept_str];	
-	}
+  }
+  
+  const handleDialogForEditEvent = () => {
+    setEventDialogVisible(false)
+  }
 	
 	return (
 		<div className="society_wrap">
@@ -164,6 +194,74 @@ const SocietyPage = () => {
 					})}	
 				</div>	
       </div>
+      <Dialog 
+        open={eventDialogVisible} 
+        onClose={handleDialogForEditEvent} 
+        aria-labelledby="form-dialog-title"
+        className="dialog_box event_dialog_box"
+      >
+        <DialogTitle id="form-dialog-title">Edit</DialogTitle>
+        <DialogContent>
+          <TextField
+            id="eventTitle"
+            label="Event Title"
+            value={eventTitle}
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            className="event_field desc"
+            id="outlined-multiline-static"
+            label="Event Description"
+            multiline
+            rows={4}
+            value={eventDesc}
+            variant="outlined"
+            fullWidth
+          />
+          <div className="time_and_date_wrapper">
+            <TextField
+              id="date"
+              label="Event Date"
+              type="date"
+              defaultValue="2017-05-24"
+              className="event_date_time"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <TextField
+              id="time"
+              label="Alarm clock"
+              type="time"
+              defaultValue="07:30"
+              className="event_date_time time_picker"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              inputProps={{
+                step: 300, // 5 min
+              }}
+            />
+          </div>
+          <div className="created_by_wrapper">
+            <InputLabel id="demo-simple-select-label">Created By</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={createBy}
+              // onChange={handleChange}
+            >
+              { createdByOptions.map(createBy => (
+                <MenuItem value={createBy.value} key={createBy.value}>{createBy.label}</MenuItem>
+              ))}
+            </Select>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEventDialogVisible(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
 		</div>
 	)
 }
