@@ -139,6 +139,8 @@ exports.updateEvent = async (req, res) => {
 		events[index].title = updatedEvent.title;
 		events[index].description = updatedEvent.description;
 		events[index].createBy = updatedEvent.createBy;
+		events[index].time = updatedEvent.time;
+		events[index].date = updatedEvent.date;
 
 		await society.updateOne({ events });
 

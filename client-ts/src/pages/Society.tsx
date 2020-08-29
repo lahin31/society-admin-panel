@@ -51,12 +51,14 @@ const SocietyPage = () => {
     "eng": "English",
     "jms": "Journalism and Media Studies",
   });
+  const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [eventDialogVisible, setEventDialogVisible] = useState<boolean>(false);
   const [eventTitle, setEventTitle] = useState<string>("");
   const [eventDesc, setEventDesc] = useState<string>("");
   const [event_date, setEventDate] = useState<string>("");
   const [event_time, setEventTime] = useState<string>("");
-  const [createBy, setCreatedBy] = useState<string>("");
+  const [createBy, setCreatedBy] = useState<any>("");
+  const [eventDialogTitle, setEventDialogTitle] = useState<string>("");
 
 
 	useEffect(() => {
@@ -72,12 +74,44 @@ const SocietyPage = () => {
       // eslint-disable-next-line
       isMounted = false;
     };
-	}, [society_id]);
+  }, [society_id]);
+  
+  const handleAddEvent = () => {
+    const newEvent = {
+      title: eventTitle,
+      description: eventDesc,
+      date: event_date,
+      time: event_time,
+      createBy,
+    };
+    fetch("/society/add_event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        newEvent,
+        society_id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setEventDialogVisible(false);
+        fetch(`/society/get_society/${society_id}`)
+          .then((res) => res.json())
+          .then((res) => {
+            setSociety(res.society);
+            // makeEventPropertyEmpty();
+          });
+      })
+      .catch((err) => console.log(err));
+  };
 
 	const fetchEventForEdit = (id: string) => {
-    // setSelectedEventId(id);
+    setSelectedEventId(id);
     setEventDialogVisible(true);
-    // setEventDialogTitle("Edit Event");
+    setEventDialogTitle("Edit Event");
     fetch("/society/fetch_edit_event", {
       method: "POST",
       headers: {
@@ -93,8 +127,45 @@ const SocietyPage = () => {
       .then((res) => {
         setEventTitle(res.event.title);
         setEventDesc(res.event.description);
-        // setCreatedBy(res.event.createBy);
-        console.log(res)
+        setEventDate(res.event.date);
+        setEventTime(res.event.time);
+        setCreatedBy(res.event.createBy);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleEditEvent = () => {
+    const updatedEvent = {
+      title: eventTitle,
+      description: eventDesc,
+      date: event_date,
+      time: event_time,
+      createBy,
+    };
+
+    fetch("/society/update_event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        event_id: selectedEventId,
+        society_id,
+        updatedEvent,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "Updated") {
+          // setSelectedEventId(null);
+          setEventDialogVisible(false);
+          fetch(`/society/get_society/${society_id}`)
+            .then((res) => res.json())
+            .then((res) => {
+              setSociety(res.society);
+            });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -154,11 +225,32 @@ const SocietyPage = () => {
   const handleDialogForEditEvent = () => {
     setEventDialogVisible(false)
   }
+
+  const openDialogForAddEvent = () => {
+    setEventDialogVisible(true);
+    setEventDialogTitle("Add Event");
+  }
+
+  const tConvert = (time: string): string => {
+    let timer = time.split(':');
+    let res = parseInt(timer[0]) >= 12 && (parseInt(timer[0])-12 || 12) + ':' + timer[1] + ' PM' || (Number(timer[0]) || 12) + ':' + timer[1] + ' AM';
+    return res;
+  }
 	
 	return (
 		<div className="society_wrap">
 			<h1 className="society_title">{society.name}</h1>
 			<div className="events_wrap">
+        <h2>
+          Events{" "}
+          <span
+            className="add_event_btn"
+            onClick={openDialogForAddEvent}
+            // tabIndex="0"
+          >
+            Add New
+          </span>
+        </h2>
 				<div className="events">
 				{society.events && society.events.length === 0 && (
 					<p>No events for this society</p>
@@ -184,7 +276,7 @@ const SocietyPage = () => {
 									</span>
 								</div>
 								<span className="event_date_time">
-									{ev.date.substr(0, 10)}, {ev.time.substr(11, 8)}
+									{ev.date.substr(0, 10)}, {tConvert(ev.time)}
 								</span>
 								<br />
 								<span className="event_dept">{generateDept(dept, ev.createBy)}</span>
@@ -200,12 +292,13 @@ const SocietyPage = () => {
         aria-labelledby="form-dialog-title"
         className="dialog_box event_dialog_box"
       >
-        <DialogTitle id="form-dialog-title">Edit</DialogTitle>
+        <DialogTitle id="form-dialog-title">{eventDialogTitle}</DialogTitle>
         <DialogContent>
           <TextField
             id="eventTitle"
             label="Event Title"
             value={eventTitle}
+            onChange={ev => setEventTitle(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -216,6 +309,7 @@ const SocietyPage = () => {
             multiline
             rows={4}
             value={eventDesc}
+            onChange={ev => setEventDesc(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -224,23 +318,22 @@ const SocietyPage = () => {
               id="date"
               label="Event Date"
               type="date"
-              defaultValue="2017-05-24"
+              value={event_date}
               className="event_date_time"
+              onChange={ev => setEventDate(ev.target.value)}
               InputLabelProps={{
                 shrink: true,
               }}
             />
             <TextField
               id="time"
-              label="Alarm clock"
+              label="Event Time"
               type="time"
-              defaultValue="07:30"
+              value={event_time}
               className="event_date_time time_picker"
+              onChange={ev => setEventTime(ev.target.value)}
               InputLabelProps={{
                 shrink: true,
-              }}
-              inputProps={{
-                step: 300, // 5 min
               }}
             />
           </div>
@@ -250,7 +343,7 @@ const SocietyPage = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={createBy}
-              // onChange={handleChange}
+              onChange={ev => setCreatedBy(ev.target.value)}
             >
               { createdByOptions.map(createBy => (
                 <MenuItem value={createBy.value} key={createBy.value}>{createBy.label}</MenuItem>
@@ -260,6 +353,13 @@ const SocietyPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEventDialogVisible(false)}>Cancel</Button>
+          <Button 
+            onClick={
+              eventDialogTitle === "Add Event"
+                ? handleAddEvent
+                : handleEditEvent
+            }
+          >{eventDialogTitle}</Button>
         </DialogActions>
       </Dialog>
 		</div>
