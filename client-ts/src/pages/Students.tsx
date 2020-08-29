@@ -19,14 +19,6 @@ const useStyles = makeStyles({
 
 const Students = () => {
 	const [students, setStudents] = useState<Student[]>([]);
-  const [columns] = useState([
-    { label: "Name", prop: "name" },
-    { label: "Username", prop: "username" },
-    { label: "Email", prop: "email" },
-    { label: "Batch", prop: "batch" },
-    { label: "ID", prop: "std_id" },
-    { label: "Department", prop: "department" },
-	]);
 	const classes = useStyles();
 	
 	useEffect(() => {

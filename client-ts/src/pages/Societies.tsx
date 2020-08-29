@@ -34,13 +34,13 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
 	return (
 		<div className="societies_wrapper">
 			<h1>Societies</h1>
-			{societies.length === 0 ? (
+			{societies && societies.length === 0 ? (
 				<div className="loader_wrap">
 					<Loader width="80px" height="80px" />
 				</div>
 			) : (
 				<>
-					{ societies.map(society => (
+					{ societies.map((society: Society) => (
 						<Card variant="outlined" className="card society_card" key={society._id}>
 							<CardContent>
 								<h2 onClick={() => goToSocietyDetails(society._id)}>{society.name}</h2>

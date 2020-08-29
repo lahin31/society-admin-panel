@@ -233,8 +233,7 @@ const SocietyPage = () => {
 
   const tConvert = (time: string): string => {
     let timer = time.split(':');
-    let res = parseInt(timer[0]) >= 12 && (parseInt(timer[0])-12 || 12) + ':' + timer[1] + ' PM' || (Number(timer[0]) || 12) + ':' + timer[1] + ' AM';
-    return res;
+    return parseInt(timer[0]) >= 12 && (parseInt(timer[0])-12 || 12) + ':' + timer[1] + ' PM' || (Number(timer[0]) || 12) + ':' + timer[1] + ' AM';
   }
 	
 	return (
@@ -252,7 +251,7 @@ const SocietyPage = () => {
           </span>
         </h2>
 				<div className="events">
-				{society.events && society.events.length === 0 && (
+				{(society ?. events) && society.events.length === 0 && (
 					<p>No events for this society</p>
 				)}
 				{society.events &&
