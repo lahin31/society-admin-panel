@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default React.createContext({
-  token: null,
-  adminId: null,
-  tokenExpiration: null,
+	token: '',
+	adminId: '',
+  tokenExpiration: '',
   // eslint-disable-next-line
   login: (token, adminId, tokenExpiration) => {},
   logout: () => {},
-});
+})

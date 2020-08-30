@@ -70,3 +70,22 @@
 		}
 	}
 }
+
+.event_dialog_box {
+	.desc {
+		margin-top: 20px !important;
+	}
+	.event_date_time {
+		width: 200px;
+    margin-top: 15px;
+	}
+	.time_picker {
+		margin-left: 10px;
+	}
+	.created_by_wrapper {
+		margin-top: 20px;
+		.MuiInputBase-root {
+			width: 200px;
+		}
+	}
+}
