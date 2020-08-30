@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import AuthContext from '../contexts/auth-context';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
@@ -13,6 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import DialogActions from '@material-ui/core/DialogActions';
 import { Society, Event } from '../types/society';
+import { tConvert } from '../helpers/TimeConvert';
 import './Society.scss';
 
 interface DeptType {
@@ -102,7 +103,7 @@ const SocietyPage = () => {
           .then((res) => res.json())
           .then((res) => {
             setSociety(res.society);
-            // makeEventPropertyEmpty();
+            makeEventPropertyEmpty();
           });
       })
       .catch((err) => console.log(err));
@@ -125,11 +126,12 @@ const SocietyPage = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        setEventTitle(res.event.title);
-        setEventDesc(res.event.description);
-        setEventDate(res.event.date);
-        setEventTime(res.event.time);
-        setCreatedBy(res.event.createBy);
+        const { title, description, date, time, createBy } = res.event;
+        setEventTitle(title);
+        setEventDesc(description);
+        setEventDate(date);
+        setEventTime(time);
+        setCreatedBy(createBy);
       })
       .catch((err) => console.log(err));
   };
@@ -216,7 +218,15 @@ const SocietyPage = () => {
         }
       })
       .catch((err) => console.log(err));
-	};
+  };
+  
+  const makeEventPropertyEmpty = (): void => {
+    setEventTitle("");
+    setEventDesc("");
+    setEventDate("");
+    setEventTime("");
+    setCreatedBy("");
+  };
 	
 	function generateDept<DeptType, K extends keyof DeptType>(dept: DeptType, dept_str: K) {
 		return dept[dept_str];	
@@ -229,11 +239,7 @@ const SocietyPage = () => {
   const openDialogForAddEvent = () => {
     setEventDialogVisible(true);
     setEventDialogTitle("Add Event");
-  }
-
-  const tConvert = (time: string): string => {
-    let timer = time.split(':');
-    return parseInt(timer[0]) >= 12 && (parseInt(timer[0])-12 || 12) + ':' + timer[1] + ' PM' || (Number(timer[0]) || 12) + ':' + timer[1] + ' AM';
+    makeEventPropertyEmpty();
   }
 	
 	return (
