@@ -14,3 +14,10 @@ export type Event = {
 	title: string;
 	_id: string;
 }
+
+export type Notice = {
+	_id: string;
+	title: string;
+	description: string;
+	createdBy: any;
+}

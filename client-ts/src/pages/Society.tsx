@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import DialogActions from '@material-ui/core/DialogActions';
-import { Society, Event } from '../types/society';
+import { Society, Event, Notice } from '../types/society';
 import { tConvert } from '../helpers/TimeConvert';
 import './Society.scss';
 
@@ -54,13 +54,18 @@ const SocietyPage = () => {
   });
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [eventDialogVisible, setEventDialogVisible] = useState<boolean>(false);
+  const [noticeDialogVisible, setNoticeDialogVisible] = useState<boolean>(false);
   const [eventTitle, setEventTitle] = useState<string>("");
   const [eventDesc, setEventDesc] = useState<string>("");
   const [event_date, setEventDate] = useState<string>("");
   const [event_time, setEventTime] = useState<string>("");
   const [createBy, setCreatedBy] = useState<any>("");
+  const [noticeTitle, setNoticeTitle] = useState<string>("");
+  const [noticeDescription, setNoticeDescription] = useState<string>("");
   const [eventDialogTitle, setEventDialogTitle] = useState<string>("");
-
+  const [noticeDialogTitle, setNoticeDialogTitle] = useState<string>("");
+  const [noticeCreatedBy, setNoticeCreatedBy] = useState<any>("");
+  const [selectedNoticeId, setSelectedNoticeId] = useState<string>("");
 
 	useEffect(() => {
     let isMounted = true;
@@ -196,6 +201,95 @@ const SocietyPage = () => {
       .catch((err) => console.log(err));
   };
 
+  const fetchNoticeForEdit = (id: string) => {
+    setNoticeDialogTitle("Edit Notice");
+    setNoticeDialogVisible(true);
+    setSelectedNoticeId(id);
+    fetch("/society/fetch_edit_notice", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        notice_id: id,
+        society_id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setNoticeCreatedBy(res.notice.createdBy);
+        setNoticeTitle(res.notice.title);
+        setNoticeDescription(res.notice.description);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const handleAddNotice = () => {
+    const newNotice = {
+      title: noticeTitle,
+      description: noticeDescription,
+      createdBy: noticeCreatedBy,
+    };
+
+    fetch("/society/add_notice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({ newNotice, society_id }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setNoticeDialogVisible(false);
+        fetch(`/society/get_society/${society_id}`)
+          .then((res) => res.json())
+          .then((res) => {
+            setSociety(res.society);
+            setNoticeTitle("");
+            setNoticeDescription("");
+            setNoticeCreatedBy("");
+          });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const updateNotice = () => {
+    const updatedNotice = {
+      title: noticeTitle,
+      description: noticeDescription,
+      createdBy: noticeCreatedBy,
+    };
+
+    fetch("/society/update_notice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+        notice_id: selectedNoticeId,
+        society_id,
+        updatedNotice,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "Updated") {
+          setSelectedNoticeId("");
+          setNoticeDialogVisible(false);
+          makeNoticePropertyEmpty();
+          fetch(`/society/get_society/${society_id}`)
+            .then((res) => res.json())
+            .then((res) => {
+              setSociety(res.society);
+            });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
 	const handleDeleteNotice = (id: string) => {
     fetch("/society/delete_society_notice", {
       method: "DELETE",
@@ -227,6 +321,12 @@ const SocietyPage = () => {
     setEventTime("");
     setCreatedBy("");
   };
+
+  const makeNoticePropertyEmpty = (): void => {
+    setNoticeTitle("");
+    setNoticeDescription("");
+    setNoticeCreatedBy("");
+  };
 	
 	function generateDept<DeptType, K extends keyof DeptType>(dept: DeptType, dept_str: K) {
 		return dept[dept_str];	
@@ -236,10 +336,20 @@ const SocietyPage = () => {
     setEventDialogVisible(false)
   }
 
+  const handleDialogForEditNotice = () => {
+    setNoticeDialogVisible(false);
+  }
+
   const openDialogForAddEvent = () => {
     setEventDialogVisible(true);
     setEventDialogTitle("Add Event");
     makeEventPropertyEmpty();
+  }
+
+  const openDialogForNotice = () => {
+    makeNoticePropertyEmpty();
+    setNoticeDialogVisible(true);
+    setNoticeDialogTitle("Add Notice");
   }
 	
 	return (
@@ -290,6 +400,48 @@ const SocietyPage = () => {
 						);
 					})}	
 				</div>	
+      </div>
+      <div className="notices_wrap">
+      <h2>
+        Notices{" "}
+        <span
+          className="add_notice_btn"
+          onClick={openDialogForNotice}
+          // tabIndex="0"
+        >
+          Add New
+        </span>
+      </h2>
+      <div className="notices">
+        {society.notices && society.notices.length === 0 && (
+          <p>No notices for this society</p>
+        )}
+        {society.notices &&
+          society.notices.length > 0 &&
+          society.notices.map((nt: Notice) => {
+            return (
+              <div className="notice" key={nt._id}>
+                <div className="event_title">
+                  {nt.title}
+                  <span
+                    className="delete_icon"
+                    onClick={() => handleDeleteNotice(nt._id)}
+                  >
+                    <DeleteIcon />
+                  </span>
+                  <span
+                    className="edit_icon"
+                    onClick={() => fetchNoticeForEdit(nt._id)}
+                  >
+                    <EditIcon />
+                  </span>
+                </div>
+                <span className="event_dept">{generateDept(dept, nt.createdBy)}</span> 
+                <p className="event_description">{nt.description}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
       <Dialog 
         open={eventDialogVisible} 
@@ -365,6 +517,59 @@ const SocietyPage = () => {
                 : handleEditEvent
             }
           >{eventDialogTitle}</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog 
+        open={noticeDialogVisible} 
+        onClose={handleDialogForEditNotice} 
+        aria-labelledby="form-dialog-title"
+        className="dialog_box event_dialog_box"
+      >
+        <DialogTitle id="form-dialog-title">{noticeDialogTitle}</DialogTitle>
+        <DialogContent>
+          <TextField
+            id="noticeTitle"
+            label="Notice Title"
+            value={noticeTitle}
+            onChange={ev => setNoticeTitle(ev.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            className="notice_field desc"
+            id="outlined-multiline-static"
+            label="Notice Description"
+            multiline
+            rows={4}
+            value={noticeDescription}
+            onChange={ev => setNoticeDescription(ev.target.value)}
+            variant="outlined"
+            fullWidth
+          />
+          <div className="created_by_wrapper">
+            <InputLabel id="demo-simple-select-label">Created By</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={noticeCreatedBy}
+              onChange={ev => setNoticeCreatedBy(ev.target.value)}
+            >
+              { createdByOptions.map(createBy => (
+                <MenuItem value={createBy.value} key={createBy.value}>{createBy.label}</MenuItem>
+              ))}
+            </Select>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNoticeDialogVisible(false)}>Cancel</Button>
+          <Button 
+            onClick={
+              noticeDialogTitle === "Add Notice"
+                ? handleAddNotice
+                : updateNotice
+            }
+          >{noticeDialogTitle}</Button>
         </DialogActions>
       </Dialog>
 		</div>
