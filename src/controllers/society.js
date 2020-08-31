@@ -63,6 +63,30 @@ exports.getSociety = async(req, res) => {
 	}
 }
 
+exports.deleteSociety = async (req, res) => {
+	try {
+		const societyId = req.body.society_id;
+
+		if (!societyId) {
+      return res.status(500).json({
+        error: "Something went wrong",
+      });
+		}
+		
+		await Society.deleteOne({ _id: societyId });
+		const societies = await Society.find({});
+
+		return res.status(200).json({
+			successMsg: "Successfully deleted",
+			societies
+    });
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
+
 exports.addEvent = async (req, res) => {
 	try {
 		const newEvent = req.body.newEvent;

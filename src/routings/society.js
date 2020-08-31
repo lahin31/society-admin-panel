@@ -13,6 +13,7 @@ router.post('/fetch_edit_notice', checkAuth, societyController.fetchEditNotice);
 router.post('/add_society', checkAuth, societyController.addSociety);
 router.post('/update_event', checkAuth, societyController.updateEvent);
 router.post('/update_notice', checkAuth, societyController.updateNotice);
+router.delete('/delete_society', checkAuth, societyController.deleteSociety);
 router.delete('/delete_society_event', checkAuth, societyController.deleteSocietyEvent);
 router.delete('/delete_society_notice', checkAuth, societyController.deleteSocietyNotice);
 
