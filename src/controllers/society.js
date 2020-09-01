@@ -63,6 +63,29 @@ exports.getSociety = async(req, res) => {
 	}
 }
 
+exports.fetchSocietyForEdit = async (req, res) => {
+	try {
+		const societyId = req.body.society_id;
+
+		if(!societyId) {
+			return res.status(500).json({
+        error: "Something went wrong",
+      });
+		}
+
+		const society = await Society.find({ _id: societyId });
+
+		return res.status(200).json({
+			societyId,
+			society: society[0]
+		});
+	} catch(err) {
+		return res.status(500).json({
+			error: err
+		})
+	}
+}
+
 exports.deleteSociety = async (req, res) => {
 	try {
 		const societyId = req.body.society_id;

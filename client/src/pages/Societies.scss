@@ -13,9 +13,15 @@
 	.society_title {
 		display: flex;
 		justify-content: space-between;
-		.delete_icon {
+		.society_actions {
 			padding-top: 28px;
-    	cursor: pointer;
+			.edit_icon {
+				padding-right: 10px;
+				cursor: pointer;
+			}
+			.delete_icon {
+				cursor: pointer;
+			}
 		}
 	}
 }
