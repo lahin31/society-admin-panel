@@ -1,12 +1,12 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const compression = require('compression');
-const db = require('./db');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const compression = require("compression");
+const db = require("./db");
 
-const adminRoutes = require('./routings/admin');
-const societyRoutes = require('./routings/society');
-const studentRoutes = require('./routings/student');
+const adminRoutes = require("./routings/admin");
+const societyRoutes = require("./routings/society");
+const studentRoutes = require("./routings/student");
 
 require("dotenv").config();
 
@@ -14,7 +14,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(
-	bodyParser.urlencoded({
+  bodyParser.urlencoded({
     extended: true,
   })
 );

@@ -5,23 +5,23 @@ const genAccTkn = require("../helpers/genAccessToken");
 
 let refreshTokens = [];
 
-exports.Login = async(email, password) => {
+exports.Login = async (email, password) => {
   const admin = await Admin.findOne({
-    email
+    email,
   });
 
   if (!admin) {
     return {
       message: "Email or Password isn't matched",
-    }
+    };
   }
 
   if (admin.password !== password) {
     return {
       message: "Email or Password isn't matched",
-    }
+    };
   }
-  
+
   const token = genAccTkn.generateAccessToken(admin);
   const refreshToken = jwt.sign(
     {
@@ -39,4 +39,4 @@ exports.Login = async(email, password) => {
     expiresIn: "10h",
     refreshToken,
   };
-}
+};

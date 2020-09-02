@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "format": "prettier --write src/"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.15",
     "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.1"
   }
 }

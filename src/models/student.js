@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const studentSchema = new Schema({
-	name: {
-		type: String,
-		required: true
-	},
+  name: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
     required: true,
@@ -18,11 +18,11 @@ const studentSchema = new Schema({
   },
   account_confirmation: {
     type: String,
-		required: false
+    required: false,
   },
   accountConfirmationToken: {
     type: String,
-    required: false
+    required: false,
   },
   password: {
     type: String,
@@ -35,24 +35,24 @@ const studentSchema = new Schema({
   resetPasswordExpiration: {
     type: String,
     required: false,
-	},
-	profile_picture: {
-		type: String,
-		required: false
+  },
+  profile_picture: {
+    type: String,
+    required: false,
   },
   department: {
     type: String,
-		required: true
+    required: true,
   },
   batch: {
     type: String,
-		required: true
+    required: true,
   },
   std_id: {
     type: String,
-		required: true
+    required: true,
   },
-	registered_societies: []
-})
+  registered_societies: [],
+});
 
 module.exports = mongoose.model("Student", studentSchema);

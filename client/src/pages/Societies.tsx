@@ -70,10 +70,35 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
 
 	const updateSociety = (): void => {
 		setOpenDialogForEdit(false);
+		fetch("/society/update_society", {
+			method: "PUT",
+			headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + context.token,
+      },
+      body: JSON.stringify({
+				society_id: selectedSocietyId,
+				society_name,
+				society_description
+      }),
+		})
+		.then(res => res.json())
+		.then(res => {
+			if(res.message==="Updated") {
+				fetch("/society/fetch_societies")
+					.then((res) => res.json())
+					.then((res) => {
+						setSocieties(res.societies);
+					})
+					.catch((err) => console.log(err));
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	const fetchSocietyForEdit = (society_id: string): void => {
 		setOpenDialogForEdit(true);
+		setSelectedSocietyId(society_id);
 		setSocietyName("");
 		setSocietyDescription("");
 		fetch("/society/fetch_society_for_edit", {
@@ -162,6 +187,7 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
             id="society_title"
 						label="Society Title"
 						value={society_name}
+						onChange={ev => setSocietyName(ev.target.value)}
             type="text"
 						fullWidth
 						variant="outlined"
@@ -170,6 +196,7 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
 						id="event_description"
 						label="Event Description"
 						value={society_description}
+						onChange={ev => setSocietyDescription(ev.target.value)}
 						multiline
 						rows={4}
 						variant="outlined"
@@ -184,7 +211,7 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
 						Cancel
 					</Button>
 					<Button variant="contained" color="primary" onClick={updateSociety}>
-						Edit
+						Update
 					</Button>
 				</DialogActions>
 			</Dialog>

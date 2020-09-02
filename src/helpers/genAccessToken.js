@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 
 // generating access token
-exports.generateAccessToken = admin => {
-	return jwt.sign(
+exports.generateAccessToken = (admin) => {
+  return jwt.sign(
     {
       adminId: admin.id,
       email: admin.email,
@@ -12,4 +12,4 @@ exports.generateAccessToken = admin => {
       expiresIn: "10h",
     }
   );
-}
+};

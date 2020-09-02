@@ -1,8 +1,8 @@
 const AuthService = require("../services/auth");
 
 exports.postLogin = async (req, res) => {
-	try {
-		const email = req.body.emailVal;
+  try {
+    const email = req.body.emailVal;
     const password = req.body.passwordVal;
     const result = await AuthService.Login(email, password);
     const { message, adminId, accessToken, expiresIn, refreshToken } = result;
@@ -13,10 +13,10 @@ exports.postLogin = async (req, res) => {
       accessToken,
       expiresIn,
       refreshToken,
-    }); 
-	} catch(err) {
-		return res.status(500).json({
+    });
+  } catch (err) {
+    return res.status(500).json({
       error: err,
     });
-	}
-}
+  }
+};

@@ -1,352 +1,386 @@
-const Admin = require('../models/admin');
-const Society = require('../models/society');
+const Admin = require("../models/admin");
+const Society = require("../models/society");
 
 exports.fetchSocieties = async (req, res) => {
-	try {
-		const societies = await Society.find({});
-		return res.status(200).json({
-			societies
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+  try {
+    const societies = await Society.find({});
+    return res.status(200).json({
+      societies,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.addSociety = async (req, res) => {
-	try {
-		const name = req.body.name;
-		const description = req.body.desc;
-		const adminId = req.adminId;
-		const admin = await Admin.findById({ _id: adminId });
-		
-		if(!name || !admin) {
-			return res.status(404).json({
-				error: "Something went wrong"
-			})
-		}
+  try {
+    const name = req.body.name;
+    const description = req.body.desc;
+    const adminId = req.adminId;
+    const admin = await Admin.findById({ _id: adminId });
 
-		const society = new Society({ name, description });
-
-		await society.save();
-
-		return res.status(201).json({
-			message: "Added Successfully"
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
-
-exports.getSociety = async(req, res) => {
-	try {
-		const societyId = req.params.society_id;
-		const society = await Society.findById({ _id: societyId });
-
-		if(!society) {
-			return res.status(404).json({
-				message: "Not found"
-			})
-		}
-
-		return res.status(200).json({
-			societyId,
-			society
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
-
-exports.fetchSocietyForEdit = async (req, res) => {
-	try {
-		const societyId = req.body.society_id;
-
-		if(!societyId) {
-			return res.status(500).json({
+    if (!name || !admin) {
+      return res.status(404).json({
         error: "Something went wrong",
       });
-		}
+    }
 
-		const society = await Society.find({ _id: societyId });
+    const society = new Society({ name, description });
 
-		return res.status(200).json({
-			societyId,
-			society: society[0]
-		});
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    await society.save();
 
-exports.deleteSociety = async (req, res) => {
-	try {
-		const societyId = req.body.society_id;
+    return res.status(201).json({
+      message: "Added Successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
-		if (!societyId) {
+exports.getSociety = async (req, res) => {
+  try {
+    const societyId = req.params.society_id;
+    const society = await Society.findById({ _id: societyId });
+
+    if (!society) {
+      return res.status(404).json({
+        message: "Not found",
+      });
+    }
+
+    return res.status(200).json({
+      societyId,
+      society,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
+
+exports.updateSociety = async (req, res) => {
+  try {
+    const societyId = req.body.society_id;
+    const societyName = req.body.society_name;
+    const societyDescription = req.body.society_description;
+
+    let society = await Society.findById({ _id: societyId });
+
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
+
+    await Society.updateOne(
+      { _id: societyId },
+      {
+        $set: {
+          name: societyName,
+          description: societyDescription,
+        },
+      }
+    );
+
+    return res.status(200).json({
+      message: "Updated",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
+
+exports.fetchSocietyForEdit = async (req, res) => {
+  try {
+    const societyId = req.body.society_id;
+
+    if (!societyId) {
       return res.status(500).json({
         error: "Something went wrong",
       });
-		}
-		
-		await Society.deleteOne({ _id: societyId });
-		const societies = await Society.find({});
+    }
 
-		return res.status(200).json({
-			successMsg: "Successfully deleted",
-			societies
+    const society = await Society.find({ _id: societyId });
+
+    return res.status(200).json({
+      societyId,
+      society: society[0],
     });
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
+
+exports.deleteSociety = async (req, res) => {
+  try {
+    const societyId = req.body.society_id;
+
+    if (!societyId) {
+      return res.status(500).json({
+        error: "Something went wrong",
+      });
+    }
+
+    await Society.deleteOne({ _id: societyId });
+    const societies = await Society.find({});
+
+    return res.status(200).json({
+      successMsg: "Successfully deleted",
+      societies,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.addEvent = async (req, res) => {
-	try {
-		const newEvent = req.body.newEvent;
-		const societyId = req.body.society_id;
-		const society = await Society.findById({ _id: societyId });
-		
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+  try {
+    const newEvent = req.body.newEvent;
+    const societyId = req.body.society_id;
+    const society = await Society.findById({ _id: societyId });
 
-		let events = [...society.events];
-		events.push(newEvent);
-		await Society.updateOne(
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
+
+    let events = [...society.events];
+    events.push(newEvent);
+    await Society.updateOne(
       { _id: societyId },
       {
         $set: {
           events,
         },
       }
-		);
-		return res.status(201).json({
-			message: "Successfully added"
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    );
+    return res.status(201).json({
+      message: "Successfully added",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.fetchEditEvent = async (req, res) => {
-	try {
-		const event_id = req.body.event_id;
-		const societyId = req.body.society_id;
-		const society = await Society.findById({ _id: societyId });
+  try {
+    const event_id = req.body.event_id;
+    const societyId = req.body.society_id;
+    const society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		const event_index = society.events.findIndex(ev => ev.id === event_id);
-		const event = society.events[event_index];
+    const event_index = society.events.findIndex((ev) => ev.id === event_id);
+    const event = society.events[event_index];
 
-		return res.status(200).json({
-			event
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    return res.status(200).json({
+      event,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.updateEvent = async (req, res) => {
-	try {
-		const eventId = req.body.event_id;
-		const societyId = req.body.society_id;
-		const updatedEvent = req.body.updatedEvent;
+  try {
+    const eventId = req.body.event_id;
+    const societyId = req.body.society_id;
+    const updatedEvent = req.body.updatedEvent;
 
-		let society = await Society.findById({ _id: societyId });
+    let society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		let events = [...society.events];
-		let index = events.findIndex(ev => ev.id === eventId);
-		events[index].title = updatedEvent.title;
-		events[index].description = updatedEvent.description;
-		events[index].createBy = updatedEvent.createBy;
-		events[index].time = updatedEvent.time;
-		events[index].date = updatedEvent.date;
+    let events = [...society.events];
+    let index = events.findIndex((ev) => ev.id === eventId);
+    events[index].title = updatedEvent.title;
+    events[index].description = updatedEvent.description;
+    events[index].createBy = updatedEvent.createBy;
+    events[index].time = updatedEvent.time;
+    events[index].date = updatedEvent.date;
 
-		await society.updateOne({ events });
+    await society.updateOne({ events });
 
-		return res.status(200).json({ message: "Updated" });
-	} catch(err) {
-		return res.status(500).json({ error: err })
-	}
-}
+    return res.status(200).json({ message: "Updated" });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
 
 exports.deleteSocietyEvent = async (req, res) => {
-	try {
-		const event_id = req.body.event_id;
-		const societyId = req.body.society_id;
+  try {
+    const event_id = req.body.event_id;
+    const societyId = req.body.society_id;
 
-		const society = await Society.findById({ _id: societyId });
+    const society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		let events = [...society.events];
-		let index = events.findIndex(ev => ev.id === event_id);
-		events.splice(index, 1);
-		await Society.updateOne(
+    let events = [...society.events];
+    let index = events.findIndex((ev) => ev.id === event_id);
+    events.splice(index, 1);
+    await Society.updateOne(
       { _id: societyId },
       {
         $set: {
           events,
         },
       }
-		);
-		return res.status(200).json({
-			message: "Deleted"
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    );
+    return res.status(200).json({
+      message: "Deleted",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.addNotice = async (req, res) => {
-	try {
-		const newNotice = req.body.newNotice;
-		const societyId = req.body.society_id;
-		const society = await Society.findById({ _id: societyId });
+  try {
+    const newNotice = req.body.newNotice;
+    const societyId = req.body.society_id;
+    const society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		let notices = [...society.notices];
-		notices.push(newNotice);
-		await Society.updateOne(
+    let notices = [...society.notices];
+    notices.push(newNotice);
+    await Society.updateOne(
       { _id: societyId },
       {
         $set: {
           notices,
         },
       }
-		);
-		return res.status(201).json({
-			message: "Successfully added"
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    );
+    return res.status(201).json({
+      message: "Successfully added",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.fetchEditNotice = async (req, res) => {
-	try {
-		const notice_id = req.body.notice_id;
-		const societyId = req.body.society_id;
-		const society = await Society.findById({ _id: societyId });
+  try {
+    const notice_id = req.body.notice_id;
+    const societyId = req.body.society_id;
+    const society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		const notice_index = society.notices.findIndex(ev => ev.id === notice_id);
-		const notice = society.notices[notice_index];
+    const notice_index = society.notices.findIndex((ev) => ev.id === notice_id);
+    const notice = society.notices[notice_index];
 
-		return res.status(200).json({
-			notice
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    return res.status(200).json({
+      notice,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.updateNotice = async (req, res) => {
-	try {
-		const noticeId = req.body.notice_id;
-		const societyId = req.body.society_id;
-		const updatedNotice = req.body.updatedNotice;
+  try {
+    const noticeId = req.body.notice_id;
+    const societyId = req.body.society_id;
+    const updatedNotice = req.body.updatedNotice;
 
-		let society = await Society.findById({ _id: societyId });
+    let society = await Society.findById({ _id: societyId });
 
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
 
-		let notices = [...society.notices];
-		let index = notices.findIndex(ev => ev.id === noticeId);
-		notices[index].title = updatedNotice.title;
-		notices[index].description = updatedNotice.description;
-		notices[index].createdBy = updatedNotice.createdBy;
+    let notices = [...society.notices];
+    let index = notices.findIndex((ev) => ev.id === noticeId);
+    notices[index].title = updatedNotice.title;
+    notices[index].description = updatedNotice.description;
+    notices[index].createdBy = updatedNotice.createdBy;
 
-		await society.updateOne({ notices });
+    await society.updateOne({ notices });
 
-		return res.status(200).json({ message: "Updated", notices });
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    return res.status(200).json({ message: "Updated", notices });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.deleteSocietyNotice = async (req, res) => {
-	try {
-		const notice_id = req.body.notice_id;
-		const societyId = req.body.society_id;
-		const society = await Society.findById({ _id: societyId });
-		
-		if(!society) {
-			return res.status(404).json({
-				message: "No society found"
-			})
-		}
+  try {
+    const notice_id = req.body.notice_id;
+    const societyId = req.body.society_id;
+    const society = await Society.findById({ _id: societyId });
 
-		let notices = [...society.notices];
-		let index = notices.findIndex(ev => ev.id === notice_id);
-		notices.splice(index, 1);
-		await Society.updateOne(
+    if (!society) {
+      return res.status(404).json({
+        message: "No society found",
+      });
+    }
+
+    let notices = [...society.notices];
+    let index = notices.findIndex((ev) => ev.id === notice_id);
+    notices.splice(index, 1);
+    await Society.updateOne(
       { _id: societyId },
       {
         $set: {
           notices,
         },
       }
-		);
-		return res.status(200).json({
-			message: "Deleted"
-		})
-	} catch(err) {
-		return res.status(500).json({
-			error: err
-		})
-	}
-}
+    );
+    return res.status(200).json({
+      message: "Deleted",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+    });
+  }
+};
