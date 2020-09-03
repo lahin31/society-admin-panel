@@ -1,4 +1,10 @@
 .students_wrapper {
 	width: 100%;
 	margin: 60px 20px 0 20px;
+	.delete_icon_wrap {
+		svg {
+			fill: #FF0000;
+			cursor: pointer;
+		}
+	}
 }
