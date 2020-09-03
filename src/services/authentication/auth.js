@@ -1,7 +1,7 @@
-const Admin = require("../models/admin");
+const Admin = require("../../models/admin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const genAccTkn = require("../helpers/genAccessToken");
+const genAccTkn = require("../../helpers/genAccessToken");
 
 let refreshTokens = [];
 

@@ -5,7 +5,7 @@ const checkAuth = require("../middlewares/check-auth");
 const societyController = require("../controllers/society");
 
 router.get("/fetch_societies", societyController.fetchSocieties);
-router.get("/get_society/:society_id", societyController.getSociety);
+router.get("/get_society/:society_id", societyController.fetchSociety);
 router.post("/add_event", checkAuth, societyController.addEvent);
 router.post("/add_notice", checkAuth, societyController.addNotice);
 router.post(

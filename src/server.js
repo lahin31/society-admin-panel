@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const compression = require("compression");
-const db = require("./db");
+const db = require("./config/db");
 
 const adminRoutes = require("./routings/admin");
 const societyRoutes = require("./routings/society");
