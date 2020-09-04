@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Student } from "../types/student";
-import Loader from "../components/loader/Loader";
+import { Student } from "../../types/student";
+import Loader from "../../components/loader/Loader";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,7 +15,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 
-import AuthContext from "../contexts/auth-context";
+import AuthContext from "../../contexts/auth-context";
 import "./Students.scss";
 
 const useStyles = makeStyles({

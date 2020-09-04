@@ -9,7 +9,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-import AuthContext from "../contexts/auth-context";
+import AuthContext from "../../contexts/auth-context";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

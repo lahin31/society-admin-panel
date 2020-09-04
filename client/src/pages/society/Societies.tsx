@@ -10,9 +10,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import DeleteIcon from "@material-ui/icons/Delete";
 import TextField from "@material-ui/core/TextField";
-import { Society } from "../types/society";
-import Loader from "../components/loader/Loader";
-import AuthContext from "../contexts/auth-context";
+import { Society } from "../../types/society";
+import Loader from "../../components/loader/Loader";
+import AuthContext from "../../contexts/auth-context";
 import "./Societies.scss";
 
 interface SocietiesProps extends RouteComponentProps<any> {}

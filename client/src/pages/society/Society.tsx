@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import AuthContext from "../contexts/auth-context";
+import AuthContext from "../../contexts/auth-context";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -12,8 +12,8 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
-import { Society, Event, Notice } from "../types/society";
-import { tConvert } from "../helpers/TimeConvert";
+import { Society, Event, Notice } from "../../types/society";
+import { tConvert } from "../../helpers/TimeConvert";
 import "./Society.scss";
 
 interface DeptType {

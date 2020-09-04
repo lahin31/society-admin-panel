@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { Society } from "../types/society";
-import { Student } from "../types/student";
+import { Society } from "../../types/society";
+import { Student } from "../../types/student";
 import "./Dashboard.scss";
 
 const Dashboard = () => {

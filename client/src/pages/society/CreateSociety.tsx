@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
-import AuthContext from "../contexts/auth-context";
+import AuthContext from "../../contexts/auth-context";
 import "./CreateSociety.scss";
 
 interface CreateSocietyProps extends RouteComponentProps<any> {}

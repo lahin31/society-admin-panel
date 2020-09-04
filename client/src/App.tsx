@@ -8,14 +8,14 @@ import {
 import AuthContext from "./contexts/auth-context";
 
 import "./App.css";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Societies from "./pages/Societies";
+import Login from "./pages/authentications/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Societies from "./pages/society/Societies";
 import Navigation from "./components/navigations/Navigation";
 import LeftSideWrapper from "./components/leftSideWrapper/LeftSideWrapper";
-import Students from "./pages/Students";
-import CreateSociety from "./pages/CreateSociety";
-import Society from "./pages/Society";
+import Students from "./pages/student/Students";
+import CreateSociety from "./pages/society/CreateSociety";
+import Society from "./pages/society/Society";
 
 function App() {
   const [token, setToken] = useState<string>("");
