@@ -18,7 +18,7 @@ exports.removeStudent = async (req, res) => {
   try {
     const studentId = req.body.student_id;
 
-    if(!studentId) {
+    if (!studentId) {
       return res.status(400).json({
         message: "Student id needed",
       });
@@ -26,7 +26,7 @@ exports.removeStudent = async (req, res) => {
 
     await Student.deleteOne({ _id: studentId });
     let students = await Student.find({});
-    
+
     return res.status(200).json({
       message: "Successfully deleted",
       students,
@@ -36,4 +36,4 @@ exports.removeStudent = async (req, res) => {
       error: err,
     });
   }
-}
+};
