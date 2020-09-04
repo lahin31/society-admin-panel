@@ -1,28 +1,28 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { useParams } from 'react-router-dom';
-import AuthContext from '../contexts/auth-context';
-import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import DialogActions from '@material-ui/core/DialogActions';
-import { Society, Event, Notice } from '../types/society';
-import { tConvert } from '../helpers/TimeConvert';
-import './Society.scss';
+import React, { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
+import AuthContext from "../contexts/auth-context";
+import Button from "@material-ui/core/Button";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import DialogActions from "@material-ui/core/DialogActions";
+import { Society, Event, Notice } from "../types/society";
+import { tConvert } from "../helpers/TimeConvert";
+import "./Society.scss";
 
 interface DeptType {
-	"cse": string;
-	"eee": string;
-	"bba": string;
-	"eco": string;
-	"eng": string;
-	"jms": string;
+  cse: string;
+  eee: string;
+  bba: string;
+  eco: string;
+  eng: string;
+  jms: string;
 }
 
 const createdByOptions = [
@@ -35,26 +35,28 @@ const createdByOptions = [
 ];
 
 const SocietyPage = () => {
-	const [society, setSociety] = useState<Society>({
-		description: "",
-		events: [],
-		name: "",
-		notices: [],
-		_id: ""
-	});
-	const { society_id } = useParams();
-	const context = useContext(AuthContext);
-	const [dept] = useState<DeptType>({
-    "cse": "Computer Science and Engineering",
-    "eee": "Electrical and Electronics Engineering",
-    "bba": "Business Administration",
-    "eco": "Economics",
-    "eng": "English",
-    "jms": "Journalism and Media Studies",
+  const [society, setSociety] = useState<Society>({
+    description: "",
+    events: [],
+    name: "",
+    notices: [],
+    _id: "",
+  });
+  const { society_id } = useParams();
+  const context = useContext(AuthContext);
+  const [dept] = useState<DeptType>({
+    cse: "Computer Science and Engineering",
+    eee: "Electrical and Electronics Engineering",
+    bba: "Business Administration",
+    eco: "Economics",
+    eng: "English",
+    jms: "Journalism and Media Studies",
   });
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [eventDialogVisible, setEventDialogVisible] = useState<boolean>(false);
-  const [noticeDialogVisible, setNoticeDialogVisible] = useState<boolean>(false);
+  const [noticeDialogVisible, setNoticeDialogVisible] = useState<boolean>(
+    false
+  );
   const [eventTitle, setEventTitle] = useState<string>("");
   const [eventDesc, setEventDesc] = useState<string>("");
   const [event_date, setEventDate] = useState<string>("");
@@ -67,7 +69,7 @@ const SocietyPage = () => {
   const [noticeCreatedBy, setNoticeCreatedBy] = useState<any>("");
   const [selectedNoticeId, setSelectedNoticeId] = useState<string>("");
 
-	useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     fetch(`/society/get_society/${society_id}`)
       .then((res) => res.json())
@@ -81,7 +83,7 @@ const SocietyPage = () => {
       isMounted = false;
     };
   }, [society_id]);
-  
+
   const handleAddEvent = () => {
     const newEvent = {
       title: eventTitle,
@@ -114,7 +116,7 @@ const SocietyPage = () => {
       .catch((err) => console.log(err));
   };
 
-	const fetchEventForEdit = (id: string) => {
+  const fetchEventForEdit = (id: string) => {
     setSelectedEventId(id);
     setEventDialogVisible(true);
     setEventDialogTitle("Edit Event");
@@ -177,7 +179,7 @@ const SocietyPage = () => {
       .catch((err) => console.log(err));
   };
 
-	const handleDeleteEvent = (id: string) => {
+  const handleDeleteEvent = (id: string) => {
     fetch("/society/delete_society_event", {
       method: "DELETE",
       headers: {
@@ -223,7 +225,7 @@ const SocietyPage = () => {
         setNoticeDescription(res.notice.description);
       })
       .catch((err) => console.log(err));
-  }
+  };
 
   const handleAddNotice = () => {
     const newNotice = {
@@ -290,7 +292,7 @@ const SocietyPage = () => {
       .catch((err) => console.log(err));
   };
 
-	const handleDeleteNotice = (id: string) => {
+  const handleDeleteNotice = (id: string) => {
     fetch("/society/delete_society_notice", {
       method: "DELETE",
       headers: {
@@ -313,7 +315,7 @@ const SocietyPage = () => {
       })
       .catch((err) => console.log(err));
   };
-  
+
   const makeEventPropertyEmpty = (): void => {
     setEventTitle("");
     setEventDesc("");
@@ -327,35 +329,38 @@ const SocietyPage = () => {
     setNoticeDescription("");
     setNoticeCreatedBy("");
   };
-	
-	function generateDept<DeptType, K extends keyof DeptType>(dept: DeptType, dept_str: K) {
-		return dept[dept_str];	
+
+  function generateDept<DeptType, K extends keyof DeptType>(
+    dept: DeptType,
+    dept_str: K
+  ) {
+    return dept[dept_str];
   }
-  
+
   const handleDialogForEditEvent = () => {
-    setEventDialogVisible(false)
-  }
+    setEventDialogVisible(false);
+  };
 
   const handleDialogForEditNotice = () => {
     setNoticeDialogVisible(false);
-  }
+  };
 
   const openDialogForAddEvent = () => {
     setEventDialogVisible(true);
     setEventDialogTitle("Add Event");
     makeEventPropertyEmpty();
-  }
+  };
 
   const openDialogForNotice = () => {
     makeNoticePropertyEmpty();
     setNoticeDialogVisible(true);
     setNoticeDialogTitle("Add Notice");
-  }
-	
-	return (
-		<div className="society_wrap">
-			<h1 className="society_title">{society.name}</h1>
-			<div className="events_wrap">
+  };
+
+  return (
+    <div className="society_wrap">
+      <h1 className="society_title">{society.name}</h1>
+      <div className="events_wrap">
         <h2>
           Events{" "}
           <span
@@ -366,86 +371,90 @@ const SocietyPage = () => {
             Add New
           </span>
         </h2>
-				<div className="events">
-				{(society ?. events) && society.events.length === 0 && (
-					<p>No events for this society</p>
-				)}
-				{society.events &&
-					society.events.length > 0 &&
-					society.events.map((ev: Event) => {
-						return (
-							<div className="event" key={ev._id}>
-								<div className="event_title">
-									{ev.title}
-									<span
-										className="delete_icon"
-										onClick={() => handleDeleteEvent(ev._id)}
-									>
-										<DeleteIcon />
-									</span>
-									<span
-										className="edit_icon"
-										onClick={() => fetchEventForEdit(ev._id)}
-									>
-										<EditIcon />
-									</span>
-								</div>
-								<span className="event_date_time">
-									{ev.date.substr(0, 10)}, {tConvert(ev.time)}
-								</span>
-								<br />
-								<span className="event_dept">{generateDept(dept, ev.createBy)}</span>
-								<p className="event_description">{ev.description}</p>
-							</div>
-						);
-					})}	
-				</div>	
-      </div>
-      <div className="notices_wrap">
-      <h2>
-        Notices{" "}
-        <span
-          className="add_notice_btn"
-          onClick={openDialogForNotice}
-          // tabIndex="0"
-        >
-          Add New
-        </span>
-      </h2>
-      <div className="notices">
-        {society.notices && society.notices.length === 0 && (
-          <p>No notices for this society</p>
-        )}
-        {society.notices &&
-          society.notices.length > 0 &&
-          society.notices.map((nt: Notice) => {
-            return (
-              <div className="notice" key={nt._id}>
-                <div className="event_title">
-                  {nt.title}
-                  <span
-                    className="delete_icon"
-                    onClick={() => handleDeleteNotice(nt._id)}
-                  >
-                    <DeleteIcon />
+        <div className="events">
+          {society?.events && society.events.length === 0 && (
+            <p>No events for this society</p>
+          )}
+          {society.events &&
+            society.events.length > 0 &&
+            society.events.map((ev: Event) => {
+              return (
+                <div className="event" key={ev._id}>
+                  <div className="event_title">
+                    {ev.title}
+                    <span
+                      className="delete_icon"
+                      onClick={() => handleDeleteEvent(ev._id)}
+                    >
+                      <DeleteIcon />
+                    </span>
+                    <span
+                      className="edit_icon"
+                      onClick={() => fetchEventForEdit(ev._id)}
+                    >
+                      <EditIcon />
+                    </span>
+                  </div>
+                  <span className="event_date_time">
+                    {ev.date.substr(0, 10)}, {tConvert(ev.time)}
                   </span>
-                  <span
-                    className="edit_icon"
-                    onClick={() => fetchNoticeForEdit(nt._id)}
-                  >
-                    <EditIcon />
+                  <br />
+                  <span className="event_dept">
+                    {generateDept(dept, ev.createBy)}
                   </span>
+                  <p className="event_description">{ev.description}</p>
                 </div>
-                <span className="event_dept">{generateDept(dept, nt.createdBy)}</span> 
-                <p className="event_description">{nt.description}</p>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
-      <Dialog 
-        open={eventDialogVisible} 
-        onClose={handleDialogForEditEvent} 
+      <div className="notices_wrap">
+        <h2>
+          Notices{" "}
+          <span
+            className="add_notice_btn"
+            onClick={openDialogForNotice}
+            // tabIndex="0"
+          >
+            Add New
+          </span>
+        </h2>
+        <div className="notices">
+          {society.notices && society.notices.length === 0 && (
+            <p>No notices for this society</p>
+          )}
+          {society.notices &&
+            society.notices.length > 0 &&
+            society.notices.map((nt: Notice) => {
+              return (
+                <div className="notice" key={nt._id}>
+                  <div className="event_title">
+                    {nt.title}
+                    <span
+                      className="delete_icon"
+                      onClick={() => handleDeleteNotice(nt._id)}
+                    >
+                      <DeleteIcon />
+                    </span>
+                    <span
+                      className="edit_icon"
+                      onClick={() => fetchNoticeForEdit(nt._id)}
+                    >
+                      <EditIcon />
+                    </span>
+                  </div>
+                  <span className="event_dept">
+                    {generateDept(dept, nt.createdBy)}
+                  </span>
+                  <p className="event_description">{nt.description}</p>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+      <Dialog
+        open={eventDialogVisible}
+        onClose={handleDialogForEditEvent}
         aria-labelledby="form-dialog-title"
         className="dialog_box event_dialog_box"
       >
@@ -455,7 +464,7 @@ const SocietyPage = () => {
             id="eventTitle"
             label="Event Title"
             value={eventTitle}
-            onChange={ev => setEventTitle(ev.target.value)}
+            onChange={(ev) => setEventTitle(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -466,7 +475,7 @@ const SocietyPage = () => {
             multiline
             rows={4}
             value={eventDesc}
-            onChange={ev => setEventDesc(ev.target.value)}
+            onChange={(ev) => setEventDesc(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -477,7 +486,7 @@ const SocietyPage = () => {
               type="date"
               value={event_date}
               className="event_date_time"
-              onChange={ev => setEventDate(ev.target.value)}
+              onChange={(ev) => setEventDate(ev.target.value)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -488,7 +497,7 @@ const SocietyPage = () => {
               type="time"
               value={event_time}
               className="event_date_time time_picker"
-              onChange={ev => setEventTime(ev.target.value)}
+              onChange={(ev) => setEventTime(ev.target.value)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -500,29 +509,33 @@ const SocietyPage = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={createBy}
-              onChange={ev => setCreatedBy(ev.target.value)}
+              onChange={(ev) => setCreatedBy(ev.target.value)}
             >
-              { createdByOptions.map(createBy => (
-                <MenuItem value={createBy.value} key={createBy.value}>{createBy.label}</MenuItem>
+              {createdByOptions.map((createBy) => (
+                <MenuItem value={createBy.value} key={createBy.value}>
+                  {createBy.label}
+                </MenuItem>
               ))}
             </Select>
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEventDialogVisible(false)}>Cancel</Button>
-          <Button 
+          <Button
             onClick={
               eventDialogTitle === "Add Event"
                 ? handleAddEvent
                 : handleEditEvent
             }
-          >{eventDialogTitle}</Button>
+          >
+            {eventDialogTitle}
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog 
-        open={noticeDialogVisible} 
-        onClose={handleDialogForEditNotice} 
+      <Dialog
+        open={noticeDialogVisible}
+        onClose={handleDialogForEditNotice}
         aria-labelledby="form-dialog-title"
         className="dialog_box event_dialog_box"
       >
@@ -532,7 +545,7 @@ const SocietyPage = () => {
             id="noticeTitle"
             label="Notice Title"
             value={noticeTitle}
-            onChange={ev => setNoticeTitle(ev.target.value)}
+            onChange={(ev) => setNoticeTitle(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -543,7 +556,7 @@ const SocietyPage = () => {
             multiline
             rows={4}
             value={noticeDescription}
-            onChange={ev => setNoticeDescription(ev.target.value)}
+            onChange={(ev) => setNoticeDescription(ev.target.value)}
             variant="outlined"
             fullWidth
           />
@@ -553,27 +566,31 @@ const SocietyPage = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={noticeCreatedBy}
-              onChange={ev => setNoticeCreatedBy(ev.target.value)}
+              onChange={(ev) => setNoticeCreatedBy(ev.target.value)}
             >
-              { createdByOptions.map(createBy => (
-                <MenuItem value={createBy.value} key={createBy.value}>{createBy.label}</MenuItem>
+              {createdByOptions.map((createBy) => (
+                <MenuItem value={createBy.value} key={createBy.value}>
+                  {createBy.label}
+                </MenuItem>
               ))}
             </Select>
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setNoticeDialogVisible(false)}>Cancel</Button>
-          <Button 
+          <Button
             onClick={
               noticeDialogTitle === "Add Notice"
                 ? handleAddNotice
                 : updateNotice
             }
-          >{noticeDialogTitle}</Button>
+          >
+            {noticeDialogTitle}
+          </Button>
         </DialogActions>
       </Dialog>
-		</div>
-	)
-}
+    </div>
+  );
+};
 
 export default SocietyPage;

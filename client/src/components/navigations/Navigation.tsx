@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import AuthContext from "../../contexts/auth-context";
-import './Navigation.scss'
+import "./Navigation.scss";
 
 interface NavComponentProps extends RouteComponentProps<any> {}
 
 const Navigation: React.FC<NavComponentProps> = ({ history }) => {
   const context = useContext(AuthContext);
-  
+
   const handleLogout = () => {
     context.logout();
     history.push("/login");
   };
-	return (
+  return (
     <header className="main-navigation">
       <div className="main-navigation__logo">
         <Link to={"/"}>
@@ -34,7 +34,7 @@ const Navigation: React.FC<NavComponentProps> = ({ history }) => {
         </ul>
       </nav>
     </header>
-	)
-}
+  );
+};
 
 export default withRouter(Navigation);

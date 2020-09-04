@@ -1,10 +1,10 @@
-import React from 'react';
-import './Loader.scss';
+import React from "react";
+import "./Loader.scss";
 
 type LoaderProps = {
-	width: string;
-	height: string;
-}
+  width: string;
+  height: string;
+};
 
 const Loader: React.FC<LoaderProps> = ({ width, height }) => {
   return (
