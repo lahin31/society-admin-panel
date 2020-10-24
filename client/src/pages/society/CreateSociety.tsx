@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import AuthContext from "../../contexts/auth-context";
@@ -10,6 +10,8 @@ const CreateSociety: React.FC<CreateSocietyProps> = ({ history }) => {
   const [name, setName] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const context = useContext(AuthContext);
+
+  useEffect(() => { document.title = "Create a new society" }, []);
 
   const handleAddSociety = (e: React.SyntheticEvent): void => {
     e.preventDefault();

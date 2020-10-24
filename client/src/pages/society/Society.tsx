@@ -70,12 +70,14 @@ const SocietyPage = () => {
   const [selectedNoticeId, setSelectedNoticeId] = useState<string>("");
 
   useEffect(() => {
+    document.title = 'Society';
     let isMounted = true;
     fetch(`/society/get_society/${society_id}`)
       .then((res) => res.json())
       .then((res) => {
         if (isMounted) {
           setSociety(res.society);
+          document.title = res.society.name;
         }
       });
     return () => {

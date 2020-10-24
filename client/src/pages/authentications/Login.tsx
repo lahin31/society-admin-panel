@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -40,6 +40,8 @@ const Login: React.FC<LoginComponentProps> = ({ history }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const context = useContext(AuthContext);
+
+  useEffect(() => {document.title = "Login"}, [])
 
   const handleLogin = (e: React.SyntheticEvent): void => {
     e.preventDefault();

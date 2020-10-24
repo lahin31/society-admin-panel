@@ -34,6 +34,7 @@ const Students = () => {
   const context = useContext(AuthContext);
 
   useEffect(() => {
+    document.title = "Students";
     let isMounted = true;
     fetch("/student/fetch_students")
       .then((res) => res.json())

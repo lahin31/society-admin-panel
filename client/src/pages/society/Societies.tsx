@@ -29,6 +29,7 @@ const Societies: React.FC<SocietiesProps> = ({ history }) => {
   const context = useContext(AuthContext);
 
   useEffect(() => {
+    document.title = "Societies";
     let isMounted = true;
     fetch("/society/fetch_societies")
       .then((res) => res.json())
